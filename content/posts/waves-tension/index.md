@@ -7,7 +7,7 @@ math: true
 
 Knowing very little about music, acoustics, or wave mechanics, I couldn't help being impressed by this [Christmas Lectures video](https://www.youtube.com/watch?v=YlPTasQsPo8), especially the Chladni figures.
 
-The urge to calculate those patterns was almost immediate. The problem was that, although I was already somewhat familiar with hyperbolic advection–diffusion equations, waves are a rather different beast. So I had to start from the very beginning.
+The urge to calculate those patterns was almost immediate. The problem was that, although I was already somewhat familiar with hyperbolic conservation equations, waves are a rather different beast. So I had to start from the very beginning.
 
 The simplest wave model is the one-dimensional wave equation:
 
@@ -104,3 +104,83 @@ That's it. You choose how you want to play it: *pizzicato* or *arco*!
 {{< script src="js/violin-string.js" type="module" >}}
 
 What happens as you pluck the string closer and closer to the ends?
+
+## A Drumhead
+
+The previous two examples have focussed on how waves evolve in time. But when talking about waves, there is an even more important and fundamental aspect to address: which waves are allowed to exist?
+
+We could do this analysis for the violin string, but we like a good challenge, so let's do it for a drumhead. For a circular geometry, it's natural to express the wave equation in polar coordinates:
+
+$$
+\frac{\partial^2 u}{\partial t^2} =
+c^2 \left(
+\frac{\partial^2 u}{\partial r^2} +
+\frac{1}{r}\frac{\partial u}{\partial r} +
+\frac{1}{r^2}\frac{\partial^2 u}{\partial \theta^2}
+\right)
+$$
+
+with the boundary condition that the membrane is fixed on the outer rim:
+
+$$ u(r=R, \theta, t) = 0$$
+
+Now we use the technique of separation of variables to express the transverse displacement of the drum membrane as the product of a spatial and a time component:
+
+$$ u(r,\theta,t) = \phi(r,\theta) T(t) $$
+
+This leads to an ordinary differential equation for $T(t)$:
+
+$$ \ddot{T} + (c \lambda)^2 T = 0 $$
+
+and an [eigenvalue equation](https://en.wikipedia.org/wiki/Helmholtz_equation) for the spatial part:
+
+$$
+\left(
+\frac{\partial^2}{\partial r^2} +
+\frac{1}{r}\frac{\partial}{\partial r} +
+\frac{1}{r^2}\frac{\partial^2}{\partial \theta^2}
+\right) \phi + \lambda^2 \phi = 0
+$$
+
+The solutions $\phi(r,\theta)$ describe the *shapes* of the drumhead's normal modes, while the $\lambda$ values (the eigenvalues) determine their *frequencies*.
+This equation can be solved analytically, giving the spatial pattern for each mode:
+
+$$
+\phi_{n,m}(r,\theta) = J_n(j_{n,m} r/R)
+\left[A \sin(n \theta) + B \cos(n \theta)\right]
+$$
+
+and the respective eigenvalue:
+
+$$ \lambda_{n,m} = \frac{j_{n,m}}{R}$$
+
+where $J_n$ is the $n$-th order Bessel function of the first kind, and $j_{n,m}$ denotes its $m$-th positive zero.
+
+{{<img src="drumhead-modes.png" alt="Drumhead-modes" width="550px" caption="Spatial vibration modes $\phi_{n,m}$ of a circular drumhead.">}}
+
+The number of angular and radial nodal lines increases with $n$ and $m$, respectively, giving rise to increasingly complex vibration patterns and, in general, higher frequencies. Quantitatively, the angular frequency associated with each mode is:
+
+$$ \omega_{n,m} = \frac{c j_{n,m}}{R}$$
+
+The cool and remarkable thing is that when we strike the membrane in a given way, certain modes are preferentially excited. Therefore, the distribution of frequencies — and thus the sound we hear — depends on where and how we hit the drum.
+
+The mathematical treatment of an arbitrary deformation is somewhat convoluted, but if we assume an idealized point-like displacement at the point $(r_\mathrm{s},\theta_\mathrm{s})$, a rather simple expression results:
+
+$$
+u(r,\theta,t) =
+\sum_{n,m} C_{n,m}
+J_n \left( j_{n,m} r / R \right)
+\cos \bigl(n (\theta - \theta_\mathrm{s}) \bigr)
+\cos \bigl(\omega_{n,m} t \bigr)
+$$
+
+with:
+
+$$ C_{n,m} \propto J_n\left(j_{n,m} r_\mathrm{s} / R \right) $$
+
+where $C_{n,m}$ is the excitation amplitude of mode $(n,m)$.
+
+Enough math — grab the mallet and smash that drumhead!
+
+<canvas id="drumhead-vibrations"></canvas>
+{{< script src="js/drumhead-vibrations.js" type="module" >}}
