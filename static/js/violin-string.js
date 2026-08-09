@@ -30,6 +30,7 @@ if (canvas) {
     .vs-play-btn:hover { background: var(--tag-border, #e0e0e0); }
     .vs-mag-control { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
     .vs-time-display { position: absolute; top: 10px; right: 15px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.85rem; color: #555; background: rgba(255, 255, 255, 0.8); padding: 0.2rem 0.5rem; border-radius: 4px; pointer-events: none; border: 1px solid #ddd; }
+    .vs-hint { text-align: center; font-size: 0.85rem; margin-top: 0.5rem; }
   `;
     document.head.appendChild(style);
 
@@ -139,6 +140,16 @@ if (canvas) {
     canvasContainer.appendChild(canvas);
     wrap.appendChild(canvasContainer);
 
+    const hint = document.createElement('div');
+    hint.className = 'vs-hint';
+    wrap.appendChild(hint);
+
+    function updateHint() {
+        hint.textContent = mode === 'bow'
+            ? '💡 Tip: Drag left or right on the string to move the bow.'
+            : '💡 Tip: Click and drag on the string to pluck it.';
+    }
+
     canvas.className = 'vs-canvas';
 
     const ctx = canvas.getContext('2d');
@@ -162,6 +173,7 @@ if (canvas) {
         bowGroup.style.display = mode === 'bow' ? 'flex' : 'none';
 
         actionBar.style.display = mode === 'bow' ? 'flex' : 'none';
+        updateHint();
 
         simTimeElapsed = 0;
         timeDisplay.textContent = '0.00 s';
@@ -445,6 +457,7 @@ if (canvas) {
     resizeObserver.observe(canvasContainer);
 
     setupGrid();
+    updateHint();
     resize();
     setPlaying(false);
 }
