@@ -18,7 +18,7 @@ if (canvas) {
     .csm-canvas-label { position: absolute; opacity: 0.6; font-size: 0.8rem; pointer-events: none; }
     .csm-row .katex { font-size: 1.05em; }
     .csm-val-display { min-width: 3rem; display: inline-block; }
-    .csm-hint { font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .csm-hint { font-size: 0.85rem; margin-bottom: 0.5rem; text-align: center; }
   `;
     document.head.appendChild(style);
 
