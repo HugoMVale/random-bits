@@ -79,17 +79,17 @@ if (canvas) {
   `;
     controls.appendChild(buttons);
 
-    const hint = document.createElement('div');
-    hint.className = 'csm-hint';
-    hint.textContent = '💡 Tip: Drag the masses left or right to adjust their initial positions.';
-    wrap.appendChild(hint);
-
     const canvasWrap = document.createElement('div');
     canvasWrap.className = 'csm-canvas-wrap';
     wrap.appendChild(canvasWrap);
     canvasWrap.appendChild(canvas);
     canvas.className = 'csm-canvas';
     canvas.style.width = '100%';
+
+    const hint = document.createElement('div');
+    hint.className = 'csm-hint';
+    hint.textContent = '💡 Tip: Drag the masses left or right to adjust their initial positions.';
+    wrap.appendChild(hint);
 
     const ctx = canvas.getContext('2d');
 
