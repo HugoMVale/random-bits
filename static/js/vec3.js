@@ -76,6 +76,18 @@ export class Vec3 {
     dist(v) { return this.sub(v).mag(); }
 
     /**
+     * Returns a copy of this vector clamped to a maximum magnitude, preserving
+     * direction. If the vector's magnitude is already at or below `max`,
+     * returns an unchanged copy.
+     * @param {number} max - The maximum allowed magnitude (must be >= 0).
+     * @returns {Vec3} A new vector with magnitude at most `max`.
+     */
+    limit(max) {
+        const m = this.mag();
+        return m > max ? this.mult(max / m) : this.copy();
+    }
+
+    /**
      * Creates an independent copy of this vector.
      * @returns {Vec3} A new Vec3 with the same x, y, z values.
      */
