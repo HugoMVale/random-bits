@@ -351,11 +351,6 @@ if (canvas) {
                 });
                 if (!wallEngaged) bird.dodgeSign = 0;
 
-                // Cap the combined steering acceleration. Without this, a stiff
-                // transient — most notably an obstacle dragged on top of the
-                // flock, where accO can spike to Ko * obstacle radius — would
-                // otherwise be applied in full over a single integration step
-                // and fling birds far outside the domain in one frame.
                 const totalAcc = accC.add(accA).add(accS).add(accTarget).add(accO);
                 bird.acc = totalAcc.limit(state.Amax);
             }
@@ -402,7 +397,7 @@ if (canvas) {
 
     function resize() {
         const rect = canvasContainer.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = rect.width * dpr;
         canvas.height = CANVAS_H * dpr;
         canvas.style.height = CANVAS_H + 'px';
@@ -450,22 +445,20 @@ if (canvas) {
             const center = worldToCanvas(obs.pos);
             const radius = obs.radius * center.scale;
 
-            // Top-down "cluster" tree symbol: a solid base disc fills the
-            // gaps between an irregular ring of overlapping lobes, giving a
-            // cloud-like canopy silhouette instead of a flat circle.
             ctx.beginPath();
             ctx.arc(center.x, center.y, radius * 0.8, 0, Math.PI * 2);
             ctx.fillStyle = '#3e7d4f';
             ctx.fill();
 
+            ctx.beginPath();
             obs.lobes.forEach(lobe => {
                 const lx = center.x + Math.cos(lobe.angle) * radius * lobe.ringFrac;
                 const ly = center.y + Math.sin(lobe.angle) * radius * lobe.ringFrac;
-                ctx.beginPath();
+                ctx.moveTo(lx + radius * lobe.sizeFrac, ly);
                 ctx.arc(lx, ly, radius * lobe.sizeFrac, 0, Math.PI * 2);
-                ctx.fillStyle = '#4f9d63';
-                ctx.fill();
             });
+            ctx.fillStyle = '#4f9d63';
+            ctx.fill();
 
             // Soft highlight toward the upper-left, suggesting a light
             // source (matches most of the reference icons).
@@ -508,16 +501,10 @@ if (canvas) {
         });
     }
 
-    // Cap the per-step dt so that pausing, tab-switching, or any long stall
-    // between frames doesn't get integrated as one huge physics step when
-    // the animation resumes.
     const MAX_DT = 1 / 20;
     let lastFrameTime = null;
 
     function tick(now) {
-        // Use the real elapsed time between frames rather than a fixed 1/60s,
-        // so the simulation runs at the same physical speed regardless of the
-        // display's refresh rate (e.g. 60Hz vs 120Hz).
         const dt = lastFrameTime === null ? 1 / 60 : Math.min((now - lastFrameTime) / 1000, MAX_DT);
         lastFrameTime = now;
 
