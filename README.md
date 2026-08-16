@@ -1,6 +1,6 @@
-# Random Events
+# Random Bits
 
-Source for [Random Events](https://hugomvale.github.io/random-events/), a personal science blog.
+Source for [Random Bits](https://hugomvale.github.io/random-bits/), a personal science blog.
 
 There's no fixed topic or scope beyond STEM — posts cover whatever random thought or curiosity comes to mind (physics, math, chemistry, etc.), often with some interactive visualization or small simulation attached.
 

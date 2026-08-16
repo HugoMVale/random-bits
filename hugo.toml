@@ -1,6 +1,6 @@
-baseURL = 'https://hugomvale.github.io/random-events/'
+baseURL = 'https://hugomvale.github.io/random-bits/'
 locale = 'en-us'
-title = 'Random Events'
+title = 'Random Bits'
 theme = 'PaperMod'
 
 [markup.goldmark.renderer]
