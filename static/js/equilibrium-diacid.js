@@ -17,6 +17,7 @@
     let alpha = 0.5;
     let molecules = [];
     let lastUpdate = 0;
+    let currentDpr = 1;
 
     const container = document.createElement('div');
     container.style.display = 'flex';
@@ -233,9 +234,8 @@
             lastUpdate = time;
         }
 
-        const dpr = window.devicePixelRatio || 1;
-        const width = canvas.width / dpr;
-        const height = canvas.height / dpr;
+        const width = canvas.width / currentDpr;
+        const height = canvas.height / currentDpr;
 
         updatePhysics(width, height);
 
