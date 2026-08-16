@@ -66,14 +66,14 @@
         const rect = container.getBoundingClientRect();
         const width = Math.min(rect.width, 650);
         const height = 320;
-        const dpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
 
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         initMolecules(width, height);
     }
 
@@ -241,6 +241,9 @@
 
         ctx.clearRect(0, 0, width, height);
 
+        const ionizedPath = new Path2D();
+        const nonIonizedPath = new Path2D();
+
         molecules.forEach(m => {
             const cos = Math.cos(m.angle);
             const sin = Math.sin(m.angle);
@@ -253,16 +256,17 @@
 
             drawWavyLine(x1, y1, x2, y2, m.waves, 4);
 
-            ctx.beginPath();
-            ctx.arc(x1, y1, 5, 0, Math.PI * 2);
-            ctx.fillStyle = m.leftIonized ? COLOR_IONIZED : COLOR_NON_IONIZED;
-            ctx.fill();
+            (m.leftIonized ? ionizedPath : nonIonizedPath).moveTo(x1 + 5, y1);
+            (m.leftIonized ? ionizedPath : nonIonizedPath).arc(x1, y1, 5, 0, Math.PI * 2);
 
-            ctx.beginPath();
-            ctx.arc(x2, y2, 5, 0, Math.PI * 2);
-            ctx.fillStyle = m.rightIonized ? COLOR_IONIZED : COLOR_NON_IONIZED;
-            ctx.fill();
+            (m.rightIonized ? ionizedPath : nonIonizedPath).moveTo(x2 + 5, y2);
+            (m.rightIonized ? ionizedPath : nonIonizedPath).arc(x2, y2, 5, 0, Math.PI * 2);
         });
+
+        ctx.fillStyle = COLOR_NON_IONIZED;
+        ctx.fill(nonIonizedPath);
+        ctx.fillStyle = COLOR_IONIZED;
+        ctx.fill(ionizedPath);
 
         requestAnimationFrame(render);
     }
