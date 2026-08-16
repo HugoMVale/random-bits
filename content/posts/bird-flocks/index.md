@@ -1,6 +1,6 @@
 ---
 title: "Bird Flocks"
-date: 2026-08-10
+date: 2026-08-16
 draft: false
 math: true
 ---
