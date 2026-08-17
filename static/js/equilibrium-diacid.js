@@ -1,3 +1,19 @@
+/**
+ * equilibrium-diacid.js
+ *
+ * Animated canvas illustration for the "A Diacid Paradox" blog post.
+ *
+ * Renders a floating, jittering population of simplified diacid molecules
+ * (wavy backbones with a circular "acid group" at each end). A slider lets
+ * the reader control the degree of ionization (alpha, 0-1); each acid group
+ * end is independently ionized with probability alpha and colored
+ * accordingly (green = non-ionized, red = ionized), re-rolled at a fixed
+ * interval to visualize the equilibrium as a dynamic, statistical process
+ * rather than a static snapshot.
+ *
+ * Molecules drift with simple Brownian-motion-like jitter, damping, and
+ * pairwise elastic collisions to keep the scene lively without overlap.
+ */
 (function () {
     const CANVAS_ID = 'equilibrium-diacid';
     const NUM_MOLECULES = 35;
@@ -75,6 +91,7 @@
         canvas.style.height = height + 'px';
 
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        currentDpr = dpr;
         initMolecules(width, height);
     }
 
