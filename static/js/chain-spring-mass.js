@@ -1,3 +1,19 @@
+/**
+ *  chain-spring-mass.js
+ * 
+ * Interactive animation for the "Waves under Tension" blog post.
+ * 
+ * Interactive simulation of a 1D chain of point masses connected by springs,
+ * fixed at both ends, illustrating how the discrete system converges to the
+ * wave equation. Integrates the equations of motion with velocity Verlet and
+ * renders the displacement u(x), velocity u_dot(x), and the physical chain
+ * (springs colored by strain) on a canvas. 
+ * 
+ * Users can adjust the wave-speed parameter KL^2/M and the number of masses N,
+ * toggle play/pause, reset to a flat or sinusoidal initial condition, and 
+ * drag individual masses to set new initial displacements.
+ */
+
 import { createVelocityVerlet } from './math/verlet.js';
 
 const canvas = document.getElementById('chain-spring-mass');
