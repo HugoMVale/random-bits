@@ -1,3 +1,23 @@
+/**
+ * can-3-holes.js
+ *
+ * Interactive animation for the "Case of the 3-Hole Can" blog post.
+ *
+ * Draws a tall can filled with water up to height H, with a single hole
+ * at adjustable height h (controlled by a slider). Water is modeled as a
+ * stream of particles launched horizontally from the hole with the
+ * theoretical Torricelli efflux velocity v = sqrt(2g(H-h)), then falling
+ * under gravity as projectiles until they reach the ground (y = 0).
+ *
+ * Moving the slider changes h/H, updates the exit velocity accordingly,
+ * and resets the particle stream so the new jet trajectory is visible
+ * immediately.
+ *
+ * The canvas is drawn in a fixed logical 500x400 coordinate space
+ * (see baseWidth/baseHeight below) and scaled responsively to fit the
+ * container width and the device's pixel ratio, so it renders correctly
+ * on both desktop and narrow mobile viewports.
+ */
 (function () {
     const canvas = document.getElementById("can-3-holes");
     if (!canvas) return;
@@ -44,8 +64,40 @@
     container.appendChild(canvas);
 
     const ctx = canvas.getContext("2d");
-    canvas.width = 500;
-    canvas.height = 400;
+
+    // All drawing below happens in a fixed *logical* coordinate space
+    // (baseWidth x baseHeight). The actual backing-store size of the
+    // canvas is scaled separately to fit the container width and the
+    // device's pixel ratio, via ctx.setTransform() in resizeCanvas().
+    // This keeps the geometry/animation math untouched while making the
+    // canvas responsive on narrow screens (e.g. Android phones), where a
+    // hard-coded 500px-wide canvas would otherwise overflow or get
+    // stretched/squished by the page's CSS.
+    const baseWidth = 500;
+    const baseHeight = 400;
+
+    container.style.width = "100%";
+    canvas.style.display = "block";
+    canvas.style.width = "100%";
+    canvas.style.maxWidth = baseWidth + "px";
+    canvas.style.height = "auto";
+
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const displayWidth = Math.min(canvas.clientWidth || baseWidth, baseWidth);
+        const displayHeight = displayWidth * (baseHeight / baseWidth);
+
+        canvas.width = Math.round(displayWidth * dpr);
+        canvas.height = Math.round(displayHeight * dpr);
+
+        const scaleX = canvas.width / baseWidth;
+        const scaleY = canvas.height / baseHeight;
+        ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("orientationchange", resizeCanvas);
 
     const H = 1.0;
     const g = 9.81;
@@ -55,7 +107,7 @@
     const canWidth = 90;
     const canHeight = 260;
     const originX = padding + 40;
-    const originY = canvas.height - padding;
+    const originY = baseHeight - padding;
     const scale = canHeight / H;
 
     let particles = [];
@@ -125,7 +177,7 @@
         lastTime = now;
 
         ctx.fillStyle = "#faf8f5";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, baseWidth, baseHeight);
 
         const v_x = Math.sqrt(2 * g * (H - h));
         const holeX_math = 0;
@@ -145,8 +197,8 @@
         drawSketchLine(originX + canWidth, waterTopY, originX + canWidth, originY, "#222", 2);
         drawSketchEllipse(originX + rx, originY, rx, ry, "#222");
 
-        drawSketchLine(originX - 25, originY, canvas.width - 20, originY, "#333", 2);
-        drawArrowHead(canvas.width - 20, originY, 0);
+        drawSketchLine(originX - 25, originY, baseWidth - 20, originY, "#333", 2);
+        drawArrowHead(baseWidth - 20, originY, 0);
 
         drawSketchLine(originX, originY + 15, originX, waterTopY - 25, "#333", 2);
         drawArrowHead(originX, waterTopY - 25, -Math.PI / 2);
@@ -163,7 +215,7 @@
 
         ctx.fillStyle = "#111";
         ctx.font = "italic 22px 'Times New Roman', 'Latin Modern Math', serif";
-        ctx.fillText("x", canvas.width - 30, originY + 25);
+        ctx.fillText("x", baseWidth - 30, originY + 25);
         ctx.fillText("y", originX + 12, waterTopY - 15);
         ctx.fillText("H", dimHX - 22, waterTopY + canHeight / 2 + 7);
         ctx.fillText("h", dimhX + 10, holeCanvasY + (originY - holeCanvasY) / 2 + 7);
