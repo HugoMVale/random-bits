@@ -1,3 +1,22 @@
+/**
+ * drumhead-vibrations.js
+ *
+ * Interactive simulation of a circular drumhead's normal modes for the
+ * "Waves Under Tension" blog post.
+ *
+ * Solves the 2D wave equation on a circular membrane analytically via
+ * separation of variables, using Bessel functions J_n and their zeros
+ * j_{n,m} to build the normal modes phi_{n,m}(r,theta). Clicking a point
+ * on the drumhead (left panel) "strikes" it there, setting each mode's
+ * excitation amplitude proportional to J_n(j_{n,m} r_strike / R), and the
+ * resulting superposition u(r,theta,t) = sum C_{n,m} J_n(...) cos(n(theta -
+ * theta_strike)) cos(omega_{n,m} t) is animated as a pseudo-3D height field
+ * (right panel), alongside a bar chart of the excited frequency spectrum.
+ *
+ * Wave speed c, membrane radius R, and animation speed are adjustable via
+ * sliders and recompute the mode frequencies and shapes accordingly.
+ */
+
 import { bessel } from './math/bessel.js';
 
 const canvas = document.getElementById('drumhead-vibrations');
@@ -214,8 +233,6 @@ if (canvas) {
         }
     }
 
-    // Scratch buffer for cos(omega_{n,m} * t), recomputed once per frame
-    // (not once per grid point) and reused across the whole grid loop below.
     const cosOmegaT = new Float64Array((N_MODES + 1) * (N_MODES + 1));
 
     function tick(now) {
@@ -225,8 +242,6 @@ if (canvas) {
 
         document.getElementById('dh-time-val').textContent = t.toFixed(4) + ' s';
 
-        // cos(omega * t) depends only on (n, m, t), not on the grid point,
-        // so compute each mode's value exactly once per frame here...
         for (let n = 0; n <= N_MODES; n++) {
             for (let m = 1; m <= N_MODES; m++) {
                 cosOmegaT[n * (N_MODES + 1) + m] = Math.cos(modes[n][m].omega * t);
@@ -240,8 +255,6 @@ if (canvas) {
                 let sum = 0;
                 for (let n = 0; n <= N_MODES; n++) {
                     for (let m = 1; m <= N_MODES; m++) {
-                        // ...and just look it up here instead of recomputing
-                        // Math.cos() 1550 times per mode per frame.
                         sum += modes[n][m].grid[idx] * cosOmegaT[n * (N_MODES + 1) + m];
                     }
                 }
@@ -269,11 +282,7 @@ if (canvas) {
         canvas.style.height = h + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         computeSpatialGrid();
-        precomputeModes();
-        if (!playing) {
-            t = 0;
-            strike();
-        }
+        if (!playing) draw();
     }
 
     function draw() {
