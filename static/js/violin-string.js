@@ -1,4 +1,4 @@
-import { createVelocityVerlet } from './verlet.js';
+import { createVelocityVerlet } from './math/verlet.js';
 
 const canvas = document.getElementById('violin-string');
 

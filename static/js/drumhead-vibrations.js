@@ -1,4 +1,4 @@
-import { bessel } from './bessel.js';
+import { bessel } from './math/bessel.js';
 
 const canvas = document.getElementById('drumhead-vibrations');
 

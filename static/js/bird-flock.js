@@ -1,5 +1,4 @@
-// js/bird-flock.js
-import { Vec3 } from './vec3.js';
+import { Vec3 } from './math/vec3.js';
 
 const canvas = document.getElementById('bird-flock');
 
