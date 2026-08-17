@@ -12,11 +12,6 @@
  * Moving the slider changes h/H, updates the exit velocity accordingly,
  * and resets the particle stream so the new jet trajectory is visible
  * immediately.
- *
- * The canvas is drawn in a fixed logical 500x400 coordinate space
- * (see baseWidth/baseHeight below) and scaled responsively to fit the
- * container width and the device's pixel ratio, so it renders correctly
- * on both desktop and narrow mobile viewports.
  */
 (function () {
     const canvas = document.getElementById("can-3-holes");
@@ -65,14 +60,6 @@
 
     const ctx = canvas.getContext("2d");
 
-    // All drawing below happens in a fixed *logical* coordinate space
-    // (baseWidth x baseHeight). The actual backing-store size of the
-    // canvas is scaled separately to fit the container width and the
-    // device's pixel ratio, via ctx.setTransform() in resizeCanvas().
-    // This keeps the geometry/animation math untouched while making the
-    // canvas responsive on narrow screens (e.g. Android phones), where a
-    // hard-coded 500px-wide canvas would otherwise overflow or get
-    // stretched/squished by the page's CSS.
     const baseWidth = 500;
     const baseHeight = 400;
 
