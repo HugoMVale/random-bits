@@ -1,3 +1,25 @@
+/**
+ * violin-string.js
+ *
+ * Interactive simulation of a damped, driven vibrating string for the
+ * "Waves Under Tension" blog post.
+ *
+ * Discretizes the string into N points and integrates the damped wave
+ * equation with velocity Verlet, including a velocity-proportional damping
+ * term and, in Bow Mode, a Stribeck-type friction force applied at an
+ * adjustable bow position (computed from the relative velocity between the
+ * bow and the string). String parameters (length, tension, linear density,
+ * damping) and bow parameters (bow velocity, normal force, static/dynamic
+ * friction coefficients, velocity scale) are all adjustable via sliders,
+ * along with a visual gain control to exaggerate small displacements.
+ *
+ * In Pluck Mode, clicking and dragging on the string sets a triangular
+ * initial displacement and releases it to vibrate and decay. In Bow Mode,
+ * dragging horizontally moves the bow position, continuously driving the
+ * string. The wave speed c and fundamental frequency f are recomputed and
+ * displayed whenever the string parameters change.
+ */
+
 import { createVelocityVerlet } from './math/verlet.js';
 
 const canvas = document.getElementById('violin-string');
