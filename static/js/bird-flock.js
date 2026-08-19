@@ -446,6 +446,7 @@ if (canvas) {
 
             ctx.beginPath();
             ctx.arc(center.x, center.y, radius * 0.8, 0, Math.PI * 2);
+            ctx.closePath(); // some Android canvas backends leave a sliver gap on unclosed full circles
             ctx.fillStyle = '#3e7d4f';
             ctx.fill();
 
@@ -455,6 +456,7 @@ if (canvas) {
                 const lx = center.x + Math.cos(lobe.angle) * radius * lobe.ringFrac;
                 const ly = center.y + Math.sin(lobe.angle) * radius * lobe.ringFrac;
                 ctx.arc(lx, ly, radius * lobe.sizeFrac, 0, Math.PI * 2);
+                ctx.closePath();
                 ctx.fill();
             });
 
@@ -462,18 +464,21 @@ if (canvas) {
             // source (matches most of the reference icons).
             ctx.beginPath();
             ctx.arc(center.x - radius * 0.22, center.y - radius * 0.22, radius * 0.32, 0, Math.PI * 2);
+            ctx.closePath();
             ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
             ctx.fill();
 
             // Trunk, dead center — also a visual cue for "grab here to move".
             ctx.beginPath();
             ctx.arc(center.x, center.y, Math.max(2, radius * 0.12), 0, Math.PI * 2);
+            ctx.closePath();
             ctx.fillStyle = '#5b4530';
             ctx.fill();
 
             // Resize handle, at the canopy's nominal (non-decorative) edge.
             ctx.beginPath();
             ctx.arc(center.x + radius, center.y, 4, 0, Math.PI * 2);
+            ctx.closePath();
             ctx.fillStyle = '#2e6b45';
             ctx.fill();
         });
