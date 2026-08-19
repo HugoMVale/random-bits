@@ -209,7 +209,7 @@ export class Vec3 {
 /**
  * An N-component vector utilizing Float64Array for performance.
  */
-export class VecN {
+export class Array1D {
     /**
      * @param {number|number[]|Float64Array} input - The dimension length (initialized to 0s) or initial data.
      */
@@ -219,15 +219,15 @@ export class VecN {
     }
 
     /**
-     * Throws if `v` is not a VecN of the same dimension as this one. Used
+     * Throws if `v` is not a Array1D of the same dimension as this one. Used
      * internally to guard binary operations against silent shape mismatches.
-     * @param {VecN} v - The other vector.
+     * @param {Array1D} v - The other vector.
      * @throws {RangeError} If `v.dim !== this.dim`.
      * @private
      */
     _checkDim(v) {
         if (v.dim !== this.dim) {
-            throw new RangeError(`VecN dimension mismatch: ${this.dim} vs ${v.dim}`);
+            throw new RangeError(`Array1D dimension mismatch: ${this.dim} vs ${v.dim}`);
         }
     }
 
@@ -237,24 +237,24 @@ export class VecN {
 
     /**
      * Adds another vector to this one.
-     * @param {VecN} v - The vector to add. Must have the same `dim` as this one.
-     * @returns {VecN} A new vector equal to `this + v`.
+     * @param {Array1D} v - The vector to add. Must have the same `dim` as this one.
+     * @returns {Array1D} A new vector equal to `this + v`.
      */
     add(v) {
         this._checkDim(v);
-        const res = new VecN(this.dim);
+        const res = new Array1D(this.dim);
         for (let i = 0; i < this.dim; i++) res.data[i] = this.data[i] + v.data[i];
         return res;
     }
 
     /**
      * Subtracts another vector from this one.
-     * @param {VecN} v - The vector to subtract. Must have the same `dim` as this one.
-     * @returns {VecN} A new vector equal to `this - v`.
+     * @param {Array1D} v - The vector to subtract. Must have the same `dim` as this one.
+     * @returns {Array1D} A new vector equal to `this - v`.
      */
     sub(v) {
         this._checkDim(v);
-        const res = new VecN(this.dim);
+        const res = new Array1D(this.dim);
         for (let i = 0; i < this.dim; i++) res.data[i] = this.data[i] - v.data[i];
         return res;
     }
@@ -262,10 +262,10 @@ export class VecN {
     /**
      * Scales this vector by a scalar.
      * @param {number} s - The scale factor.
-     * @returns {VecN} A new vector equal to `this * s`.
+     * @returns {Array1D} A new vector equal to `this * s`.
      */
     mult(s) {
-        const res = new VecN(this.dim);
+        const res = new Array1D(this.dim);
         for (let i = 0; i < this.dim; i++) res.data[i] = this.data[i] * s;
         return res;
     }
@@ -291,16 +291,16 @@ export class VecN {
      * Returns a unit-length version of this vector (same direction, length 1).
      * If this vector has zero length, returns a zero vector instead of
      * dividing by zero.
-     * @returns {VecN} The normalized vector, or a zero vector if this vector is zero.
+     * @returns {Array1D} The normalized vector, or a zero vector if this vector is zero.
      */
     normalize() {
         const m = this.mag();
-        return m === 0 ? new VecN(this.dim) : this.mult(1 / m);
+        return m === 0 ? new Array1D(this.dim) : this.mult(1 / m);
     }
 
     /**
      * Computes the dot product of this vector with another.
-     * @param {VecN} v - The other vector. Must have the same `dim` as this one.
+     * @param {Array1D} v - The other vector. Must have the same `dim` as this one.
      * @returns {number} The scalar dot product `this · v`.
      */
     dot(v) {
@@ -312,7 +312,7 @@ export class VecN {
 
     /**
      * Computes the Euclidean distance between this vector and another.
-     * @param {VecN} v - The other vector. Must have the same `dim` as this one.
+     * @param {Array1D} v - The other vector. Must have the same `dim` as this one.
      * @returns {number} The distance between `this` and `v`.
      */
     dist(v) { return this.sub(v).mag(); }
@@ -322,7 +322,7 @@ export class VecN {
      * direction. If the vector's magnitude is already at or below `max`,
      * returns an unchanged copy.
      * @param {number} max - The maximum allowed magnitude (must be >= 0).
-     * @returns {VecN} A new vector with magnitude at most `max`.
+     * @returns {Array1D} A new vector with magnitude at most `max`.
      */
     limit(max) {
         const m = this.mag();
@@ -331,15 +331,15 @@ export class VecN {
 
     /**
      * Creates an independent copy of this vector.
-     * @returns {VecN} A new VecN with the same values.
+     * @returns {Array1D} A new Array1D with the same values.
      */
-    copy() { return new VecN(this.data); }
+    copy() { return new Array1D(this.data); }
 
     /**
      * Checks whether this vector is elementwise close to another, modeled on
      * `numpy.isclose`: a component `a` is close to `b` if
      * `|a - b| <= atol + rtol * |b|`.
-     * @param {VecN} v - The other vector.
+     * @param {Array1D} v - The other vector.
      * @param {number} [rtol=1e-5] - Relative tolerance.
      * @param {number} [atol=1e-8] - Absolute tolerance.
      * @returns {boolean} `true` if `v` has the same `dim` and all components of `this` are close to `v`'s.
@@ -360,12 +360,12 @@ export class VecN {
 
     /**
      * Returns a human-readable string representation of this vector.
-     * @returns {string} e.g. `"VecN(1, 2, 3)"`.
+     * @returns {string} e.g. `"Array1D(1, 2, 3)"`.
      */
-    toString() { return `VecN(${this.data.join(', ')})`; }
+    toString() { return `Array1D(${this.data.join(', ')})`; }
 
     /**
-     * Makes VecN iterable, e.g. `const [a, b, c] = someVecN;` or `for (const x of v)`.
+     * Makes Array1D iterable, e.g. `const [a, b, c] = someVector;` or `for (const x of v)`.
      * @returns {Iterator<number>}
      */
     [Symbol.iterator]() { return this.data[Symbol.iterator](); }
@@ -377,7 +377,7 @@ export class VecN {
     /**
      * Sets this vector's components directly, mutating it in place.
      * @param {number[]|Float64Array} values - Values to copy in; must have length `dim`.
-     * @returns {VecN} `this`, for chaining.
+     * @returns {Array1D} `this`, for chaining.
      */
     set(values) {
         this.data.set(values);
@@ -386,7 +386,7 @@ export class VecN {
 
     /**
      * Resets this vector to all zeros in place.
-     * @returns {VecN} `this`, for chaining.
+     * @returns {Array1D} `this`, for chaining.
      */
     reset() {
         this.data.fill(0);
@@ -395,8 +395,8 @@ export class VecN {
 
     /**
      * Adds another vector to this one in place: `this += v`.
-     * @param {VecN} v - The vector to add. Must have the same `dim` as this one.
-     * @returns {VecN} `this`, for chaining.
+     * @param {Array1D} v - The vector to add. Must have the same `dim` as this one.
+     * @returns {Array1D} `this`, for chaining.
      */
     addSelf(v) {
         this._checkDim(v);
@@ -406,8 +406,8 @@ export class VecN {
 
     /**
      * Subtracts another vector from this one in place: `this -= v`.
-     * @param {VecN} v - The vector to subtract. Must have the same `dim` as this one.
-     * @returns {VecN} `this`, for chaining.
+     * @param {Array1D} v - The vector to subtract. Must have the same `dim` as this one.
+     * @returns {Array1D} `this`, for chaining.
      */
     subSelf(v) {
         this._checkDim(v);
@@ -418,7 +418,7 @@ export class VecN {
     /**
      * Scales this vector in place: `this *= s`.
      * @param {number} s - The scale factor.
-     * @returns {VecN} `this`, for chaining.
+     * @returns {Array1D} `this`, for chaining.
      */
     multSelf(s) {
         for (let i = 0; i < this.dim; i++) this.data[i] *= s;
@@ -428,9 +428,9 @@ export class VecN {
     /**
      * Adds a scaled vector to this one in place, in a single pass and
      * without an intermediate vector: `this += v * s`.
-     * @param {VecN} v - The vector to scale and add. Must have the same `dim` as this one.
+     * @param {Array1D} v - The vector to scale and add. Must have the same `dim` as this one.
      * @param {number} s - The scale factor applied to `v`.
-     * @returns {VecN} `this`, for chaining.
+     * @returns {Array1D} `this`, for chaining.
      */
     addScaled(v, s) {
         this._checkDim(v);
@@ -441,9 +441,9 @@ export class VecN {
     /**
      * Sets this vector to `a - b` in place, without allocating. Useful as a
      * reusable scratch vector inside a loop.
-     * @param {VecN} a
-     * @param {VecN} b - Must have the same `dim` as `a` and as this vector.
-     * @returns {VecN} `this`, set to `a - b`.
+     * @param {Array1D} a
+     * @param {Array1D} b - Must have the same `dim` as `a` and as this vector.
+     * @returns {Array1D} `this`, set to `a - b`.
      */
     subVectors(a, b) {
         this._checkDim(a);
@@ -455,14 +455,14 @@ export class VecN {
     /**
      * Creates a zero vector of the given dimension.
      * @param {number} dim - The number of components.
-     * @returns {VecN} A new zero vector.
+     * @returns {Array1D} A new zero vector.
      */
-    static zero(dim) { return new VecN(dim); }
+    static zero(dim) { return new Array1D(dim); }
 
     /**
-     * Creates a VecN from an array or typed array.
+     * Creates a Array1D from an array or typed array.
      * @param {number[]|Float64Array} arr - Source values.
-     * @returns {VecN} A new vector with dimension equal to `arr.length`.
+     * @returns {Array1D} A new vector with dimension equal to `arr.length`.
      */
-    static from(arr) { return new VecN(arr); }
+    static from(arr) { return new Array1D(arr); }
 }
