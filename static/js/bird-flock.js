@@ -449,15 +449,14 @@ if (canvas) {
             ctx.fillStyle = '#3e7d4f';
             ctx.fill();
 
-            ctx.beginPath();
+            ctx.fillStyle = '#4f9d63';
             obs.lobes.forEach(lobe => {
+                ctx.beginPath();
                 const lx = center.x + Math.cos(lobe.angle) * radius * lobe.ringFrac;
                 const ly = center.y + Math.sin(lobe.angle) * radius * lobe.ringFrac;
-                ctx.moveTo(lx + radius * lobe.sizeFrac, ly);
                 ctx.arc(lx, ly, radius * lobe.sizeFrac, 0, Math.PI * 2);
+                ctx.fill();
             });
-            ctx.fillStyle = '#4f9d63';
-            ctx.fill();
 
             // Soft highlight toward the upper-left, suggesting a light
             // source (matches most of the reference icons).
