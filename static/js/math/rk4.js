@@ -1,19 +1,19 @@
-import { VecN } from './vec.js';
+import { Array1D } from './array.js';
 
 /**
  * Allocates a scratch workspace of vectors reused across every RK4 stage of
  * an integration, so `rk4Integrate` only allocates once per *recorded*
  * output state instead of once per internal stage evaluation.
  * @param {number} dim
- * @returns {{k1: VecN, k2: VecN, k3: VecN, k4: VecN, yTemp: VecN}}
+ * @returns {{k1: Array1D, k2: Array1D, k3: Array1D, k4: Array1D, yTemp: Array1D}}
  */
 function makeScratch(dim) {
     return {
-        k1: new VecN(dim),
-        k2: new VecN(dim),
-        k3: new VecN(dim),
-        k4: new VecN(dim),
-        yTemp: new VecN(dim),
+        k1: new Array1D(dim),
+        k2: new Array1D(dim),
+        k3: new Array1D(dim),
+        k4: new Array1D(dim),
+        yTemp: new Array1D(dim),
     };
 }
 
@@ -32,20 +32,20 @@ function makeScratch(dim) {
  * `yTemp`) and the result (`out`) are caller-supplied and reused, so calling
  * this in a loop with the same `scratch`/`out` does not allocate.
  *
- * @param {(t: number, y: VecN, dydt: VecN) => VecN} f - Derivative function
+ * @param {(t: number, y: Array1D, dydt: Array1D) => Array1D} f - Derivative function
  *   dy/dt = f(t, y). Must write into and return `dydt`; must not mutate `y`.
  * @param {number} t - Current time.
- * @param {VecN} y - Current state. Read-only; not mutated by this function.
+ * @param {Array1D} y - Current state. Read-only; not mutated by this function.
  * @param {number} h - Step size (may be negative to step backward).
- * @param {VecN} out - Vector to overwrite with the state at `t + h`. May not
+ * @param {Array1D} out - Array1D to overwrite with the state at `t + h`. May not
  *   alias `y` (the algorithm reads `y` throughout the step). Returned for
  *   convenience.
- * @param {{k1: VecN, k2: VecN, k3: VecN, k4: VecN, yTemp: VecN}} [scratch] -
+ * @param {{k1: Array1D, k2: Array1D, k3: Array1D, k4: Array1D, yTemp: Array1D}} [scratch] -
  *   Reusable stage buffers, same `dim` as `y`. If omitted, a fresh workspace
  *   is allocated for this call only — fine for one-off use, but pass an
  *   explicit workspace (see `makeScratch`, used internally by
  *   `rk4Integrate`) to avoid allocating on every call in a loop.
- * @returns {VecN} `out`, set to the state at `t + h`.
+ * @returns {Array1D} `out`, set to the state at `t + h`.
  */
 export function rk4Step(f, t, y, h, out, scratch = makeScratch(y.dim)) {
     const { k1, k2, k3, k4, yTemp } = scratch;
@@ -81,24 +81,24 @@ export function rk4Step(f, t, y, h, out, scratch = makeScratch(y.dim)) {
  * never an overshoot).
  *
  * Allocation: one scratch workspace for the whole call, plus exactly one
- * `VecN` per recorded output state (i.e. the actual result — not avoidable
+ * `Array1D` per recorded output state (i.e. the actual result — not avoidable
  * without changing the output representation). `f` must not allocate either
- * (see `rk4Step`); use `wrapAllocatingDerivative` to adapt a `(t, y) => VecN`
+ * (see `rk4Step`); use `wrapAllocatingDerivative` to adapt a `(t, y) => Array1D`
  * style function if you don't need the allocation-free hot path.
  *
- * @param {(t: number, y: VecN, dydt: VecN) => VecN} f - Derivative function,
+ * @param {(t: number, y: Array1D, dydt: Array1D) => Array1D} f - Derivative function,
  *   writing into and returning `dydt`.
  * @param {number} t0 - Initial time.
  * @param {number} tEnd - Final time. May be less than `t0` for backward
  *   integration, in which case `h` must be negative.
- * @param {VecN} y0 - Initial state. Not mutated; the returned `y` array
+ * @param {Array1D} y0 - Initial state. Not mutated; the returned `y` array
  *   holds independent vectors.
  * @param {number} h - Step size. Sign must match the direction from `t0` to
  *   `tEnd` (positive if `tEnd > t0`, negative if `tEnd < t0`).
- * @returns {{t: VecN, y: VecN[]}} `t` holds the recorded times (component
+ * @returns {{t: Array1D, y: Array1D[]}} `t` holds the recorded times (component
  *   `i` is the time of state `y[i]`), with `t.data[0] === t0` and
- *   `t.data[t.dim - 1] === tEnd` exactly. `y` is a plain array (not a VecN
- *   of VecN) since its elements are themselves vectors, not scalars.
+ *   `t.data[t.dim - 1] === tEnd` exactly. `y` is a plain array (not a Array1D
+ *   of Array1D) since its elements are themselves vectors, not scalars.
  */
 export function rk4Integrate(f, t0, tEnd, y0, h) {
     if (h === 0) throw new RangeError('Step size h must be nonzero.');
@@ -121,7 +121,7 @@ export function rk4Integrate(f, t0, tEnd, y0, h) {
     const hasPartialStep = Math.abs(remainder) > EPS * Math.abs(h || 1);
 
     const nRecorded = nFull + (hasPartialStep ? 1 : 0);
-    const tVec = new VecN(nRecorded + 1);
+    const tVec = new Array1D(nRecorded + 1);
     const yArr = new Array(nRecorded + 1);
 
     let t = t0;
@@ -130,7 +130,7 @@ export function rk4Integrate(f, t0, tEnd, y0, h) {
     yArr[0] = y;
 
     for (let i = 1; i <= nFull; i++) {
-        const next = new VecN(dim);
+        const next = new Array1D(dim);
         rk4Step(f, t, y, h, next, scratch);
         t = t0 + i * h;
         tVec.data[i] = t;
@@ -139,7 +139,7 @@ export function rk4Integrate(f, t0, tEnd, y0, h) {
     }
 
     if (hasPartialStep) {
-        const next = new VecN(dim);
+        const next = new Array1D(dim);
         rk4Step(f, t, y, remainder, next, scratch);
         tVec.data[nRecorded] = tEnd;
         yArr[nRecorded] = next;
@@ -150,17 +150,17 @@ export function rk4Integrate(f, t0, tEnd, y0, h) {
 
 /**
  * Adapts a convenience-style derivative function that allocates and returns
- * a new `VecN` — `(t, y) => VecN` — into the writes-into-`dydt` style that
+ * a new `Array1D` — `(t, y) => Array1D` — into the writes-into-`dydt` style that
  * `rk4Step`/`rk4Integrate` require.
  *
  * This restores the simpler authoring style at the cost of the allocation
- * it causes: the wrapped function still allocates a new `VecN` internally
+ * it causes: the wrapped function still allocates a new `Array1D` internally
  * on every call, it's just copied into `dydt` afterward. Prefer writing `f`
  * directly against `dydt` (see the example in the module docs / tests) when
  * the allocation-free hot path matters.
  *
- * @param {(t: number, y: VecN) => VecN} f
- * @returns {(t: number, y: VecN, dydt: VecN) => VecN}
+ * @param {(t: number, y: Array1D) => Array1D} f
+ * @returns {(t: number, y: Array1D, dydt: Array1D) => Array1D}
  */
 export function wrapAllocatingDerivative(f) {
     return (t, y, dydt) => dydt.set(f(t, y).data);
