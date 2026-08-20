@@ -1,5 +1,6 @@
 import { Vec3 } from './math/array.js';
 import { renderMath } from './math/katex-render.js';
+import { fillCircle } from './canvas-utils.js';
 
 const canvas = document.getElementById('bird-flock');
 
@@ -418,18 +419,6 @@ if (canvas) {
         );
     }
 
-    // Some Android/Skia canvas backends drop a thin sliver where a single
-    // 0..2π arc() sweep wraps back to its start, even with closePath(); two
-    // half-arcs avoid relying on that wrap-around point entirely.
-    function fillCircle(cx, cy, r, color) {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI);
-        ctx.arc(cx, cy, r, Math.PI, Math.PI * 2);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
-
     function draw() {
         const w = canvas.clientWidth;
         const h = CANVAS_H;
@@ -452,23 +441,23 @@ if (canvas) {
             const center = worldToCanvas(obs.pos);
             const radius = obs.radius * center.scale;
 
-            fillCircle(center.x, center.y, radius * 0.8, '#3e7d4f');
+            fillCircle(ctx, center.x, center.y, radius * 0.8, '#3e7d4f');
 
             obs.lobes.forEach(lobe => {
                 const lx = center.x + Math.cos(lobe.angle) * radius * lobe.ringFrac;
                 const ly = center.y + Math.sin(lobe.angle) * radius * lobe.ringFrac;
-                fillCircle(lx, ly, radius * lobe.sizeFrac, '#4f9d63');
+                fillCircle(ctx, lx, ly, radius * lobe.sizeFrac, '#4f9d63');
             });
 
             // Soft highlight toward the upper-left, suggesting a light
             // source (matches most of the reference icons).
-            fillCircle(center.x - radius * 0.22, center.y - radius * 0.22, radius * 0.32, 'rgba(255, 255, 255, 0.22)');
+            fillCircle(ctx, center.x - radius * 0.22, center.y - radius * 0.22, radius * 0.32, 'rgba(255, 255, 255, 0.22)');
 
             // Trunk, dead center — also a visual cue for "grab here to move".
-            fillCircle(center.x, center.y, Math.max(2, radius * 0.12), '#5b4530');
+            fillCircle(ctx, center.x, center.y, Math.max(2, radius * 0.12), '#5b4530');
 
             // Resize handle, at the canopy's nominal (non-decorative) edge.
-            fillCircle(center.x + radius, center.y, 4, '#2e6b45');
+            fillCircle(ctx, center.x + radius, center.y, 4, '#2e6b45');
         });
 
         ctx.fillStyle = '#2c3e50';
