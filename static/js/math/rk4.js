@@ -1,4 +1,4 @@
-import { Array1D } from './array.js';
+import { Array1D, Array2D } from './array.js';
 
 /**
  * Allocates a scratch workspace of vectors reused across every RK4 stage of
@@ -80,9 +80,8 @@ export function rk4Step(f, t, y, h, out, scratch = makeScratch(y.dim)) {
  * exactly on `tEnd` (so the last recorded time is always exactly `tEnd`,
  * never an overshoot).
  *
- * Allocation: one scratch workspace for the whole call, plus exactly one
- * `Array1D` per recorded output state (i.e. the actual result — not avoidable
- * without changing the output representation). `f` must not allocate either
+ * Allocation: one scratch workspace and two state vectors reused for the whole
+ * call, plus the returned outputs (`t` and `y`). `f` must not allocate either
  * (see `rk4Step`); use `wrapAllocatingDerivative` to adapt a `(t, y) => Array1D`
  * style function if you don't need the allocation-free hot path.
  *
@@ -91,14 +90,13 @@ export function rk4Step(f, t, y, h, out, scratch = makeScratch(y.dim)) {
  * @param {number} t0 - Initial time.
  * @param {number} tEnd - Final time. May be less than `t0` for backward
  *   integration, in which case `h` must be negative.
- * @param {Array1D} y0 - Initial state. Not mutated; the returned `y` array
- *   holds independent vectors.
+ * @param {Array1D} y0 - Initial state. Not mutated.
  * @param {number} h - Step size. Sign must match the direction from `t0` to
  *   `tEnd` (positive if `tEnd > t0`, negative if `tEnd < t0`).
- * @returns {{t: Array1D, y: Array1D[]}} `t` holds the recorded times (component
- *   `i` is the time of state `y[i]`), with `t.data[0] === t0` and
- *   `t.data[t.dim - 1] === tEnd` exactly. `y` is a plain array (not a Array1D
- *   of Array1D) since its elements are themselves vectors, not scalars.
+ * @returns {{t: Array1D, y: Array2D}} `t` holds the recorded times (component
+ *   `i` is the time of row `i + 1` in `y`), with `t.data[0] === t0` and
+ *   `t.data[t.dim - 1] === tEnd` exactly. `y` is a `(numTimes x stateDim)`
+ *   matrix where row `i + 1` stores the state at time `t.data[i]`.
  */
 export function rk4Integrate(f, t0, tEnd, y0, h) {
     if (h === 0) throw new RangeError('Step size h must be nonzero.');
@@ -121,31 +119,31 @@ export function rk4Integrate(f, t0, tEnd, y0, h) {
     const hasPartialStep = Math.abs(remainder) > EPS * Math.abs(h || 1);
 
     const nRecorded = nFull + (hasPartialStep ? 1 : 0);
-    const tVec = new Array1D(nRecorded + 1);
-    const yArr = new Array(nRecorded + 1);
+    const nTimes = nRecorded + 1;
+    const tVec = new Array1D(nTimes);
+    const yMat = new Array2D(nTimes, dim);
 
     let t = t0;
     let y = y0.copy();
+    let next = new Array1D(dim);
     tVec.data[0] = t0;
-    yArr[0] = y;
+    yMat.setRow(1, y.data);
 
     for (let i = 1; i <= nFull; i++) {
-        const next = new Array1D(dim);
         rk4Step(f, t, y, h, next, scratch);
         t = t0 + i * h;
         tVec.data[i] = t;
-        yArr[i] = next;
-        y = next;
+        yMat.setRow(i + 1, next.data);
+        [y, next] = [next, y];
     }
 
     if (hasPartialStep) {
-        const next = new Array1D(dim);
         rk4Step(f, t, y, remainder, next, scratch);
         tVec.data[nRecorded] = tEnd;
-        yArr[nRecorded] = next;
+        yMat.setRow(nRecorded + 1, next.data);
     }
 
-    return { t: tVec, y: yArr };
+    return { t: tVec, y: yMat };
 }
 
 /**
