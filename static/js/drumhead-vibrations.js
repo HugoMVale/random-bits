@@ -19,6 +19,7 @@
 
 import { bessel } from './math/bessel.js';
 import { renderMath } from './math/katex-render.js';
+import { fillCircle } from './canvas-utils.js';
 
 const canvas = document.getElementById('drumhead-vibrations');
 
@@ -288,13 +289,7 @@ if (canvas) {
         const leftCenterY = h * 0.35;
         const leftRadius = Math.min(w * 0.16, h * 0.25);
 
-        ctx.beginPath();
-        ctx.arc(leftCenterX, leftCenterY, leftRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#f8f9fa';
-        ctx.fill();
-        ctx.strokeStyle = '#2c3e50';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        fillCircle(ctx, leftCenterX, leftCenterY, leftRadius, '#f8f9fa', '#2c3e50', 2);
 
         ctx.beginPath();
         ctx.arc(leftCenterX, leftCenterY, 3, 0, 2 * Math.PI);
