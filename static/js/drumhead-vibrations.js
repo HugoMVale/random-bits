@@ -291,10 +291,7 @@ if (canvas) {
 
         fillCircle(ctx, leftCenterX, leftCenterY, leftRadius, '#f8f9fa', '#2c3e50', 2);
 
-        ctx.beginPath();
-        ctx.arc(leftCenterX, leftCenterY, 3, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ccc';
-        ctx.fill();
+        fillCircle(ctx, leftCenterX, leftCenterY, 3, '#ccc');
 
         const hX = leftCenterX + (displayRs / state.R) * leftRadius * Math.cos(displayTs);
         const hY = leftCenterY - (displayRs / state.R) * leftRadius * Math.sin(displayTs);
