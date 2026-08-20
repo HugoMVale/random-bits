@@ -15,6 +15,7 @@
  */
 
 import { createVelocityVerlet } from './math/verlet.js';
+import { renderMath } from './math/katex-render.js';
 
 const canvas = document.getElementById('chain-spring-mass');
 
@@ -37,11 +38,6 @@ if (canvas) {
     .csm-hint { font-size: 0.85rem; margin-bottom: 0.5rem; text-align: center; }
   `;
     document.head.appendChild(style);
-
-    function renderMath(el, tex) {
-        if (window.katex) window.katex.render(tex, el, { throwOnError: false });
-        else el.textContent = tex;
-    }
 
     const wrap = document.createElement('div');
     wrap.className = 'csm-wrap';

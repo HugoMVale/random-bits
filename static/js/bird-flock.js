@@ -1,14 +1,10 @@
 import { Vec3 } from './math/array.js';
+import { renderMath } from './math/katex-render.js';
 
 const canvas = document.getElementById('bird-flock');
 
 if (canvas) {
     // --- 1. UI & STYLING SETUP ---
-    function renderMath(el, tex) {
-        if (window.katex) window.katex.render(tex, el, { throwOnError: false });
-        else el.textContent = tex;
-    }
-
     const style = document.createElement('style');
     style.textContent = `
     .bf-wrap { font-family: inherit; margin: 1.5rem 0; }
@@ -180,7 +176,7 @@ if (canvas) {
                     attempts++;
                 }
                 let dir = center.sub(pos);
-                if (dir.magSq() === 0) dir = new Vec3(1, 0, 0);
+                if (dir.normSq() === 0) dir = new Vec3(1, 0, 0);
                 let vel = dir.normalize().mult(targetSpeed);
                 this.birds.push(new Bird(pos, vel));
             }
@@ -238,7 +234,7 @@ if (canvas) {
                 // body, so there's no need to zero it here first.)
 
                 // Hoisted once per bird instead of once per candidate neighbor.
-                const speed = bird.vel.mag();
+                const speed = bird.vel.norm();
                 const canSense = speed > MIN_SPEED;
 
                 // Single pass over nearby birds: gather the ones inside the
@@ -265,7 +261,7 @@ if (canvas) {
 
                                 // scratch = other.pos - bird.pos, no allocation.
                                 scratch.subVectors(other.pos, bird.pos);
-                                const dist = scratch.mag();
+                                const dist = scratch.norm();
                                 if (dist === 0 || dist > state.Rp) continue;
                                 if (scratch.dot(bird.vel) / (dist * speed) < cosPhi) continue;
 
@@ -303,7 +299,7 @@ if (canvas) {
                     // to accelerate. Fall back to the cohesion pull if there's a
                     // flock to move toward, otherwise pick an arbitrary heading —
                     // either way this guarantees the bird leaves the stall.
-                    const fallbackDir = accC.magSq() > 0 ? accC.normalize() : new Vec3(1, 0, 0);
+                    const fallbackDir = accC.normSq() > 0 ? accC.normalize() : new Vec3(1, 0, 0);
                     accTarget = fallbackDir.mult(state.Kspeed * state.v_target);
                 }
 
@@ -311,7 +307,7 @@ if (canvas) {
                 const s_i = bird.pos.add(bird.vel.mult(state.tau));
                 this.obstacles.forEach(obs => {
                     const dVec = s_i.sub(obs.pos);
-                    const d_ik = dVec.mag();
+                    const d_ik = dVec.norm();
                     if (d_ik < obs.radius) {
                         const forceMag = state.Ko * (obs.radius - d_ik);
                         if (d_ik > 0) {
@@ -342,7 +338,7 @@ if (canvas) {
                     // per encounter and held fixed (re-rolling every frame would
                     // just trade wall-jitter for side-to-side jitter).
                     const vTangent = bird.vel.sub(wall.normal.mult(bird.vel.dot(wall.normal)));
-                    if (vTangent.mag() < TANGENT_EPS) {
+                    if (vTangent.norm() < TANGENT_EPS) {
                         if (bird.dodgeSign === 0) bird.dodgeSign = Math.random() < 0.5 ? 1 : -1;
                         const tangentDir = new Vec3(-wall.normal.y, wall.normal.x, 0);
                         accO = accO.add(tangentDir.mult(bird.dodgeSign * state.Ko * penetration));

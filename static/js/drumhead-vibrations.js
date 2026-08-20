@@ -18,15 +18,11 @@
  */
 
 import { bessel } from './math/bessel.js';
+import { renderMath } from './math/katex-render.js';
 
 const canvas = document.getElementById('drumhead-vibrations');
 
 if (canvas) {
-    function renderMath(el, tex) {
-        if (window.katex) window.katex.render(tex, el, { throwOnError: false });
-        else el.textContent = tex;
-    }
-
     const style = document.createElement('style');
     style.textContent = `
     .dh-wrap { font-family: inherit; margin: 1.5rem 0; }
