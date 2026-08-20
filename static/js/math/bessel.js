@@ -1,4 +1,4 @@
-import { bisection } from './root-finder.js';
+import { bisection } from './root-solver.js';
 
 /**
  * Numerical utilities for the Bessel function of the first kind, J_n(x),
