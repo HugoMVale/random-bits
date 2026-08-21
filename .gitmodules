@@ -1,3 +1,6 @@
 [submodule "themes/PaperMod"]
 	path = themes/PaperMod
 	url = https://github.com/adityatelange/hugo-PaperMod.git
+[submodule "vendor/numerics-js"]
+	path = vendor/numerics-js
+	url = https://github.com/HugoMVale/numerics-js.git
