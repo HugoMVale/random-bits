@@ -14,8 +14,8 @@
  * drag individual masses to set new initial displacements.
  */
 
-import { createVelocityVerlet } from './math/verlet.js';
-import { renderMath } from './math/katex-render.js';
+import { createVelocityVerlet } from './numeric-js/ode/verlet.js';
+import { renderMath } from './katex-render.js';
 
 const canvas = document.getElementById('chain-spring-mass');
 

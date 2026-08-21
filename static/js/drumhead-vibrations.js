@@ -17,8 +17,8 @@
  * sliders and recompute the mode frequencies and shapes accordingly.
  */
 
-import { bessel } from './math/bessel.js';
-import { renderMath } from './math/katex-render.js';
+import { bessel } from './numeric-js/bessel.js';
+import { renderMath } from './katex-render.js';
 import { fillCircle } from './canvas-utils.js';
 
 const canvas = document.getElementById('drumhead-vibrations');

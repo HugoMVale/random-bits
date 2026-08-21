@@ -1,5 +1,5 @@
-import { Vec3 } from './math/array.js';
-import { renderMath } from './math/katex-render.js';
+import { Vec3 } from './numeric-js/array.js';
+import { renderMath } from './katex-render.js';
 import { fillCircle } from './canvas-utils.js';
 
 const canvas = document.getElementById('bird-flock');
