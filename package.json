@@ -1,0 +1,8 @@
+{
+    "name": "random-bits",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build:numeric-js": "node scripts/build-numeric-js.mjs"
+    }
+}
