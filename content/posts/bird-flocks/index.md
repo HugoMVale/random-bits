@@ -33,19 +33,19 @@ The trajectory of any bird $i$ is governed by the basic kinematic equations:
 
 $$
 \begin{aligned}
-\frac{\mathrm{d}\vec{r}_i}{\mathrm{d}t} = & \vec{v}_i \\
-\frac{\mathrm{d}\vec{v}_i}{\mathrm{d}t} = & \vec{a}_i
+\frac{\mathrm{d}\mathbf{r}_i}{\mathrm{d}t} = & \mathbf{v}_i \\
+\frac{\mathrm{d}\mathbf{v}_i}{\mathrm{d}t} = & \mathbf{a}_i
 \end{aligned}
 $$
 
-where $\vec{r}_i$, $\vec{v}_i$, and $\vec{a}_i$ denote, respectively, the position, velocity, and acceleration of bird $i$.
+where $\mathbf{r}_i$, $\mathbf{v}_i$, and $\mathbf{a}_i$ denote, respectively, the position, velocity, and acceleration of bird $i$.
 
 Reynolds' approach is based on three flock-specific steering rules: cohesion, alignment, and separation. Although Reynolds described these rules algorithmically rather than through equations, we can translate them into a simple mathematical model.
 
-The net acceleration $\vec{a}_i$ is then the sum of the three components (or driving forces per unit mass, if you will):
+The net acceleration $\mathbf{a}_i$ is then the sum of the three components (or driving forces per unit mass, if you will):
 
 $$
-\vec{a}_i = \vec{a}_i^\mathrm{c} + \vec{a}_i^\mathrm{a} + \vec{a}_i^\mathrm{s}
+\mathbf{a}_i = \mathbf{a}_i^\mathrm{c} + \mathbf{a}_i^\mathrm{a} + \mathbf{a}_i^\mathrm{s}
 $$
 
 where the superscripts $\mathrm{c}$, $\mathrm{a}$, and $\mathrm{s}$ denote cohesion, alignment, and separation, respectively.
@@ -59,36 +59,36 @@ Reynolds defined the perception zone geometrically: bird $i$ is influenced only 
 $$
 \mathcal{P}_i =
 \left\{
-\vec{r} \in \mathbb{R}^3
+\mathbf{r} \in \mathbb{R}^3
 \;\middle|\;
-0 < \|\vec{r} - \vec{r}_i\| \leq R_{\mathrm{p}},
+0 < \|\mathbf{r} - \mathbf{r}_i\| \leq R_{\mathrm{p}},
 \quad
-\frac{(\vec{r} - \vec{r}_i) \cdot \vec{v}_i}
-{\|\vec{r} - \vec{r}_i\|\,\|\vec{v}_i\|}
+\frac{(\mathbf{r} - \mathbf{r}_i) \cdot \mathbf{v}_i}
+{\|\mathbf{r} - \mathbf{r}_i\|\,\|\mathbf{v}_i\|}
 \geq \cos \phi
 \right\}
 $$
 
 and the set of birds inside it is:
 
-$$ \mathcal{N}_i ​= \left\{j \ne i: \vec{r}_j \in \mathcal{P}_i \right\} $$
+$$ \mathcal{N}_i ​= \left\{j \ne i: \mathbf{r}_j \in \mathcal{P}_i \right\} $$
 
 ### Cohesion
 
 Cohesion is the force that pulls a bird toward the geometric center of its local neighborhood:
 
 $$
-\vec{a}_i^\mathrm{c} = - K_{\mathrm{c}}
-\left(\vec{r}_i - \langle \vec{r} \rangle _{i}  \right)
+\mathbf{a}_i^\mathrm{c} = - K_{\mathrm{c}}
+\left(\mathbf{r}_i - \langle \mathbf{r} \rangle _{i}  \right)
 $$
 
 with:
 
-$$ \langle \vec{r} \rangle _{i} = \frac{1}{|\mathcal{N}_i|} \sum_{j \in \mathcal{N}_i} \vec{r_j} $$
+$$ \langle \mathbf{r} \rangle _{i} = \frac{1}{|\mathcal{N}_i|} \sum_{j \in \mathcal{N}_i} \mathbf{r_j} $$
 
 where $K_{\mathrm{c}}$ is the cohesion parameter.
 
-In terms of [PID controller](https://en.wikipedia.org/wiki/PID_controller) theory, if we define the position error as $e=(\vec{r}_i - \langle \vec{r} \rangle _{i})$, then the cohesion component is analogous to a P (proportional) term.
+In terms of [PID controller](https://en.wikipedia.org/wiki/PID_controller) theory, if we define the position error as $e=(\mathbf{r}_i - \langle \mathbf{r} \rangle _{i})$, then the cohesion component is analogous to a P (proportional) term.
 
 Cohesion encourages the formation of a flock from individual birds or the merger of smaller flocks, and is ultimately what keeps the flock from disintegrating.
 
@@ -97,15 +97,15 @@ Cohesion encourages the formation of a flock from individual birds or the merger
 Alignment is the force that drives a bird toward the average velocity of the birds in its perception zone:
 
 $$
-\vec{a}_i^\mathrm{a} = - K_{\mathrm{a}}
-\left(\vec{v}_i - \langle \vec{v} \rangle _{i}  \right)
+\mathbf{a}_i^\mathrm{a} = - K_{\mathrm{a}}
+\left(\mathbf{v}_i - \langle \mathbf{v} \rangle _{i}  \right)
 $$
 
 with:
 
 $$
-\langle \vec{v} \rangle _{i} =
-\frac{1}{|\mathcal{N}_i|} \sum_{j \in \mathcal{N}_i} \vec{v}_j
+\langle \mathbf{v} \rangle _{i} =
+\frac{1}{|\mathcal{N}_i|} \sum_{j \in \mathcal{N}_i} \mathbf{v}_j
 $$
 
 where $K_{\mathrm{a}}$ is the alignment parameter.
@@ -119,11 +119,11 @@ Alignment tends to make neighboring birds fly at similar speeds and along quasi-
 Separation is the repulsive force that keeps birds from getting too close to one another. From a mathematical standpoint, it is the least well-defined of the three behavioral rules. Here, we opt for a spring-like repulsion. Schematically, we imagine that each bird is at the center of a rubber balloon of radius $R_{\mathrm{s}}$; whenever the distance between any two birds is less than $2 R_{\mathrm{s}}$, a repulsive force proportional to the deformation of the balloon arises. Mathematically, this leads to:
 
 $$
-\vec{a}_{i}^\mathrm{s} = + K_{\mathrm{s}} \sum_{j \in \mathcal{N}_i}
-\max (0, 2 R_{\mathrm{s}}  - d_{ij} ) \frac{\vec{r}_i - \vec{r}_j}{d_{ij}}
+\mathbf{a}_{i}^\mathrm{s} = + K_{\mathrm{s}} \sum_{j \in \mathcal{N}_i}
+\max (0, 2 R_{\mathrm{s}}  - d_{ij} ) \frac{\mathbf{r}_i - \mathbf{r}_j}{d_{ij}}
 $$
 
-where $d_{ij}=\|\vec{r}_i - \vec{r}_j\|$, and $K_{\mathrm{s}}$ is the separation parameter.
+where $d_{ij}=\|\mathbf{r}_i - \mathbf{r}_j\|$, and $K_{\mathrm{s}}$ is the separation parameter.
 
 ## Flying Solo
 
@@ -139,18 +139,18 @@ Obstacle avoidance is more challenging. Taken to the extreme, you are halfway in
 
 The first step is to predict the expected position some time into the future:
 
-$$ \vec{s}_i = \vec{r}_i + \tau \vec{v}_i$$
+$$ \mathbf{s}_i = \mathbf{r}_i + \tau \mathbf{v}_i$$
 
 where $\tau$ is the prediction horizon (typically a few seconds).
 
-We then evaluate whether this projected point $\vec{s}_i $ lies inside an obstacle $k$. If it does, we apply a repulsive force as we did to separate two birds. For example, if the obstacle is spherical with center $\vec{c}_k$ and radius $R_k$, we use:
+We then evaluate whether this projected point $\mathbf{s}_i $ lies inside an obstacle $k$. If it does, we apply a repulsive force as we did to separate two birds. For example, if the obstacle is spherical with center $\mathbf{c}_k$ and radius $R_k$, we use:
 
 $$
-\vec{a}_{i}^\mathrm{o} = + K_{\mathrm{o}} \sum_{k}
-\max (0,  R_k - d_{ik}) \frac{\vec{s}_i - \vec{c}_k}{d_{ik}}
+\mathbf{a}_{i}^\mathrm{o} = + K_{\mathrm{o}} \sum_{k}
+\max (0,  R_k - d_{ik}) \frac{\mathbf{s}_i - \mathbf{c}_k}{d_{ik}}
 $$
 
-where $d_{ik}=\|\vec{s}_i - \vec{c}_k\|$, and $K_{\mathrm{o}}$ is the obstacle-avoidance parameter.
+where $d_{ik}=\|\mathbf{s}_i - \mathbf{c}_k\|$, and $K_{\mathrm{o}}$ is the obstacle-avoidance parameter.
 
 Time for birdwatching — let's put these rules to the test!
 
