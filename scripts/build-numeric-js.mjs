@@ -5,7 +5,7 @@
  * library wholesale (this folder contains nothing else).
  */
 import { execFileSync } from 'node:child_process';
-import { cp, mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { cp, mkdir, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,9 +33,8 @@ async function copyJs(srcDir, destDir) {
 }
 
 console.log('Building numerics-js...');
-if (!(await stat(path.join(vendorDir, 'node_modules')).catch(() => null))) {
-    run('npm', ['install'], vendorDir);
-}
+// Always reinstall from the lockfile: a stale node_modules would miss new devDependencies.
+run('npm', ['ci'], vendorDir);
 run('npm', ['run', 'build'], vendorDir);
 
 console.log('Vendoring compiled output into static/js/numeric-js...');

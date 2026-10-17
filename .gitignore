@@ -3,6 +3,6 @@
 /resources/_gen/
 /.hugo_build.lock
 
-# numerics-js submodule build artifacts (vendored output lives in static/js/math)
+# numerics-js submodule build artifacts (vendored output lives in static/js/numeric-js)
 /vendor/numerics-js/node_modules/
 /vendor/numerics-js/dist/
