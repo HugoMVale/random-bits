@@ -1,0 +1,188 @@
+/**
+ * Numerical differentiation methods using finite differences.
+ *
+ * @module numdiff
+ */
+import { Vector } from './linalg/Vector.js';
+import { Matrix } from './linalg/Matrix.js';
+const EPS = Number.EPSILON;
+/**
+ * Calculates scaling factors for a given vector.
+ *
+ * The scaling factors are computed according to the heuristic procedure
+ * implemented in ODRPACK95.
+ *
+ * @param x Vector `x` to be scaled.
+ * @returns A new Vector containing the computed scaling factors.
+ *
+ * @example
+ * ```ts
+ * import { Vector } from 'numerics-js/linalg';
+ * import { scaleVector } from 'numerics-js/numdiff';
+ *
+ * const x = Vector.from([1e-2, 0.0, 1.0, 1e3]);
+ * const sclx = scaleVector(x);
+ * console.log('sclx  :', sclx.toString());
+ * console.log('sclx*x:', sclx.mult(x).toString());
+ * ```
+ *
+ * Output:
+ * ```text
+ * sclx  : Vector(100, 1000, 1, 0.001)
+ * sclx*x: Vector(1, 0, 1, 1)
+ * ```
+ */
+export function scaleVector(x) {
+    const sclx = Vector.ones(x.size);
+    let xmax = 0;
+    let xmin = Infinity;
+    let hasNonZero = false;
+    // Single pass to find both xmax (max absolute value) and xmin (min non-zero absolute value)
+    for (let i = 0; i < x.size; i++) {
+        const val = Math.abs(x.get(i));
+        if (val > xmax) {
+            xmax = val;
+        }
+        if (val > 0) {
+            hasNonZero = true;
+            if (val < xmin) {
+                xmin = val;
+            }
+        }
+    }
+    // If there are no non-zero elements, return the vector of ones
+    if (!hasNonZero) {
+        return sclx;
+    }
+    const logRatio = Math.log10(xmax / xmin);
+    // Second pass to assign the appropriate scaling factors
+    for (let i = 0; i < x.size; i++) {
+        const val = x.get(i);
+        if (val === 0.0) {
+            sclx.set(i, 1e1 / xmin);
+        }
+        else {
+            if (logRatio >= 1.0) {
+                sclx.set(i, 1.0 / Math.abs(val));
+            }
+            else {
+                sclx.set(i, 1.0 / xmax);
+            }
+        }
+    }
+    return sclx;
+}
+/**
+ * Calculate the numerical Jacobian of a vector function `f(x)` using the forward
+ * finite-difference scheme.
+
+ * The step size is optimally determined according to the machine precision of the
+ * function values. Typically, the Jacobian is accurate to about half the number of
+ * reliable digits returned by the function.
+ *
+ * If the function value at `x` is provided, `N` function evaluations are
+ * required to compute the Jacobian, where `N` is the dimension of `x`.
+ *
+ * @param f Function `f` to be differentiated.
+ * @param x Differentiation point `x`.
+ * @param options Configuration options for the Jacobian calculation.
+ * @returns Jacobian matrix.
+ * @throws {RangeError} If provided `fx` has a different size from perturbed
+ * function values, if `f` returns vectors of inconsistent sizes, or if
+ * `sclx` has fewer components than `x`.
+ *
+ * @example
+ * ```ts
+ * import { Vector } from 'numerics-js/linalg';
+ * import { jacobianForward } from 'numerics-js/numdiff';
+ *
+ * // Evaluate the numerical Jacobian of `f(x, y) = [x**2 + y**2, x * y]` at `(1, 2)`.
+ * const f = (x: Vector) => {
+ *     const x0 = x.get(0);
+ *     const x1 = x.get(1);
+ *     return Vector.from([x0 ** 2 + x1 ** 2, x0 * x1]);
+ * };
+ * const x = Vector.from([1.0, 2.0]);
+ * const jacobian = jacobianForward(f, x);
+ * console.log(jacobian.toString());
+ * ```
+ *
+ * Output:
+ * ```text
+ * Matrix[[2, 4], [2, 1]]
+ * ```
+ */
+export function jacobianForward(f, x, options = {}) {
+    const fx = options.fx ?? f(x);
+    const sclx = options.sclx ? options.sclx.abs() : scaleVector(x);
+    const epsf = options.epsf !== undefined ? Math.max(options.epsf, EPS) : EPS;
+    const h0 = Math.sqrt(epsf);
+    const jacobian = new Matrix(fx.size, x.size);
+    const xh = x.copy();
+    for (let i = 0; i < x.size; i++) {
+        let h = h0 * Math.max(Math.abs(x.get(i)), 1.0 / sclx.get(i));
+        const xTemp = xh.get(i);
+        xh.set(i, xTemp + h);
+        // Recompute step size to minimize floating-point error
+        h = xh.get(i) - xTemp;
+        const fxh = f(xh);
+        const col = fxh.sub(fx).div(h);
+        jacobian.setCol(i, col);
+        // Restore the modified component
+        xh.set(i, xTemp);
+    }
+    return jacobian;
+}
+/**
+ * Calculate the numerical derivative of a scalar function `f(x)` using the centered
+ * finite-difference scheme.
+ *
+ * The step size is optimally determined according to the machine precision of
+ * the function values.
+ *
+ * @param f Function `f` to be differentiated.
+ * @param x Differentiation point `x`.
+ * @param options Configuration options for the derivative calculation.
+ * @returns Tuple containing the derivative and mean function value, `(f'(x), f(x))`.
+ * @throws {RangeError} If `options.h` is `0`.
+ *
+ * @example
+ * ```ts
+ * import { derivativeCentered } from 'numerics-js/numdiff';
+ *
+ * // Evaluate the numerical derivative of `f(x) = x**3` at `x = 1`.
+ * const f = (x: number) => x ** 3;
+ * const [df, fx] = derivativeCentered(f, 1.0);
+ * console.log('df:', df);
+ * console.log('fx:', fx);
+ * ```
+ *
+ * Output:
+ * ```text
+ * df: 3.0000000000699174
+ * fx: 1.0000000002288205
+ * ```
+ */
+export function derivativeCentered(f, x, options = {}) {
+    const epsf = options.epsf !== undefined ? Math.max(options.epsf, EPS) : EPS;
+    const h0 = Math.cbrt(3 * epsf);
+    let h;
+    if (options.h === undefined) {
+        h = h0;
+    }
+    else {
+        if (options.h === 0) {
+            throw new RangeError('derivativeCentered: h must be nonzero');
+        }
+        h = options.h;
+    }
+    h *= Math.max(1.0, Math.abs(x));
+    const xp = x + h;
+    const xm = x - h;
+    const fp = f(xp);
+    const fm = f(xm);
+    const df = (fp - fm) / (xp - xm);
+    const fx = (fp + fm) / 2.0;
+    return [df, fx];
+}
+//# sourceMappingURL=numdiff.js.map

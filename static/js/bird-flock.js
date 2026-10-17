@@ -1,4 +1,4 @@
-import { Vec3 } from './numeric-js/array.js';
+import { Vec3 } from './numeric-js/linalg.js';
 import { renderMath } from './katex-render.js';
 import { fillCircle } from './canvas-utils.js';
 

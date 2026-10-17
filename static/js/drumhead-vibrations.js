@@ -17,7 +17,7 @@
  * sliders and recompute the mode frequencies and shapes accordingly.
  */
 
-import { bessel } from './numeric-js/bessel.js';
+import { besselJ, besselJZero } from './numeric-js/special.js';
 import { renderMath } from './katex-render.js';
 import { fillCircle } from './canvas-utils.js';
 
@@ -124,7 +124,7 @@ if (canvas) {
         modes[n] = [];
         for (let m = 1; m <= N_MODES; m++) {
             modes[n][m] = {
-                j: bessel.getZero(n, m),
+                j: besselJZero(n, m),
                 C: 0,
                 omega: 0,
                 grid: new Float64Array((R_STEPS + 1) * T_STEPS)
@@ -164,7 +164,7 @@ if (canvas) {
                 if (isRimStrike) {
                     md.C = 0;
                 } else {
-                    md.C = bessel.J(n, (md.j * rs) / state.R);
+                    md.C = besselJ(n, (md.j * rs) / state.R);
                     if (n > 0) md.C *= 2;
                 }
 
@@ -178,7 +178,7 @@ if (canvas) {
                 let idx = 0;
                 for (let ir = 0; ir <= R_STEPS; ir++) {
                     const r = (ir / R_STEPS) * state.R;
-                    const bVal = md.C * bessel.J(n, (md.j * r) / state.R);
+                    const bVal = md.C * besselJ(n, (md.j * r) / state.R);
                     for (let it = 0; it < T_STEPS; it++) {
                         const theta = (it / T_STEPS) * 2 * Math.PI;
                         md.grid[idx] = bVal * Math.cos(n * (theta - ts));

@@ -27,12 +27,22 @@
  *   the same length as the others (reused every call to avoid allocations).
  *
  * @example
+ * ```ts
+ * import { createVelocityVerlet, type VerletState } from 'numerics-js/ode/verlet';
+ *
  * const step = createVelocityVerlet((u, v, aOut) => {
  *   // e.g. constant gravity
  *   for (let i = 0; i < aOut.length; i++) aOut[i] = -9.81;
  * });
  * const state: VerletState = { u: [0], v: [0], a: [0], aNext: [0] };
  * step(state, 0.016);
+ * console.log(state.u[0], state.v[0]);
+ * ```
+ *
+ * Output:
+ * ```text
+ * 0 -0.07848000000000001
+ * ```
  */
 export function createVelocityVerlet(computeAcceleration) {
     return function step(state, dt) {
@@ -48,3 +58,4 @@ export function createVelocityVerlet(computeAcceleration) {
         }
     };
 }
+//# sourceMappingURL=verlet.js.map
