@@ -55,11 +55,19 @@ if (canvas) {
     const config = [
         { id: 'c', tex: 'c', unit: '(m/s)', min: 50, max: 400, step: 1, val: 150 },
         { id: 'R', tex: 'R', unit: '(m)', min: 0.1, max: 1.0, step: 0.01, val: 0.4 },
-        { id: 'speed', tex: '\\text{Speed}', unit: '(x)', min: 0.001, max: 1.0, step: 0.001, val: 0.001 }
+        {
+            id: 'speed',
+            tex: '\\text{Speed}',
+            unit: '(x)',
+            min: 0.001,
+            max: 1.0,
+            step: 0.001,
+            val: 0.001,
+        },
     ];
 
     const state = {};
-    config.forEach(c => {
+    config.forEach((c) => {
         state[c.id] = c.val;
         const row = document.createElement('div');
         row.className = 'dh-row';
@@ -90,7 +98,8 @@ if (canvas) {
 
     const instructions = document.createElement('div');
     instructions.className = 'dh-instructions';
-    instructions.innerHTML = '💡 Tip: Hover to select strike point and click to strike the drumhead';
+    instructions.innerHTML =
+        '💡 Tip: Hover to select strike point and click to strike the drumhead';
     wrap.appendChild(instructions);
 
     canvas.className = 'dh-canvas';
@@ -102,7 +111,6 @@ if (canvas) {
     const T_STEPS = 50;
     let t = 0;
     let playing = false;
-    let rafId = null;
     let lastTime = 0;
     let scaleFactor = 1.0;
 
@@ -127,7 +135,7 @@ if (canvas) {
                 j: besselJZero(n, m),
                 C: 0,
                 omega: 0,
-                grid: new Float64Array((R_STEPS + 1) * T_STEPS)
+                grid: new Float64Array((R_STEPS + 1) * T_STEPS),
             };
         }
     }
@@ -201,7 +209,9 @@ if (canvas) {
         hasStruck = true;
 
         document.getElementById('dh-r-val').textContent = struckRs.toFixed(2);
-        document.getElementById('dh-theta-val').textContent = ((struckTs * 180) / Math.PI).toFixed(1);
+        document.getElementById('dh-theta-val').textContent = ((struckTs * 180) / Math.PI).toFixed(
+            1,
+        );
 
         t = 0;
         precomputeModes();
@@ -263,7 +273,7 @@ if (canvas) {
         draw();
 
         if (t < 5.0) {
-            rafId = requestAnimationFrame(tick);
+            requestAnimationFrame(tick);
         } else {
             playing = false;
         }
@@ -334,13 +344,14 @@ if (canvas) {
                 const i3 = (ir + 1) * T_STEPS + ((it + 1) % T_STEPS);
                 const i4 = (ir + 1) * T_STEPS + it;
 
-                const poly = [i1, i2, i3, i4].map(idx => {
+                const poly = [i1, i2, i3, i4].map((idx) => {
                     const gx = gridX[idx];
                     const gy = gridY[idx];
                     const z = Z[idx] * scaleFactor;
 
                     const px = rightCenterX + gx * projScale - gy * projScale * 0.5;
-                    const py = rightCenterY + gy * projScale * 0.5 + gx * projScale * 0.25 - z * projScale;
+                    const py =
+                        rightCenterY + gy * projScale * 0.5 + gx * projScale * 0.25 - z * projScale;
                     return { x: px, y: py, z: z };
                 });
 
@@ -395,7 +406,7 @@ if (canvas) {
         if (maxAmp > 0) {
             ctx.strokeStyle = '#3498db';
             ctx.lineWidth = 2;
-            spectrum.forEach(mode => {
+            spectrum.forEach((mode) => {
                 if (mode.amp < 1e-4) return;
                 const x = specX + (mode.f / maxFreq) * specW;
                 const y = specY - (mode.amp / maxAmp) * specH;
@@ -415,8 +426,8 @@ if (canvas) {
 
     function updateMousePos(e) {
         const rect = canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left);
-        const my = (e.clientY - rect.top);
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
 
         const leftCenterX = w * 0.22;
         const leftCenterY = h * 0.35;
@@ -435,7 +446,10 @@ if (canvas) {
 
         if (!hasStruck) {
             document.getElementById('dh-r-val').textContent = displayRs.toFixed(2);
-            document.getElementById('dh-theta-val').textContent = ((displayTs * 180) / Math.PI).toFixed(1);
+            document.getElementById('dh-theta-val').textContent = (
+                (displayTs * 180) /
+                Math.PI
+            ).toFixed(1);
         }
 
         if (!playing) draw();
@@ -448,13 +462,15 @@ if (canvas) {
         strike();
     });
 
-    config.forEach(c => {
+    config.forEach((c) => {
         const input = document.getElementById(`dh-${c.id}`);
         const valSpan = document.getElementById(`dh-${c.id}-val`);
 
         input.addEventListener('input', () => {
             state[c.id] = parseFloat(input.value);
-            valSpan.textContent = state[c.id].toFixed(c.step % 1 === 0 ? 0 : (c.step.toString().split('.')[1]?.length || 1));
+            valSpan.textContent = state[c.id].toFixed(
+                c.step % 1 === 0 ? 0 : c.step.toString().split('.')[1]?.length || 1,
+            );
 
             if (c.id === 'c' || c.id === 'R') {
                 precomputeModes();

@@ -14,40 +14,40 @@
  * immediately.
  */
 (function () {
-    const canvas = document.getElementById("can-3-holes");
+    const canvas = document.getElementById('can-3-holes');
     if (!canvas) return;
 
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.alignItems = "center";
-    container.style.fontFamily = "sans-serif";
-    container.style.margin = "1em 0";
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.fontFamily = 'sans-serif';
+    container.style.margin = '1em 0';
 
-    const controls = document.createElement("div");
-    controls.style.marginBottom = "10px";
-    controls.style.display = "flex";
-    controls.style.alignItems = "center";
-    controls.style.gap = "10px";
+    const controls = document.createElement('div');
+    controls.style.marginBottom = '10px';
+    controls.style.display = 'flex';
+    controls.style.alignItems = 'center';
+    controls.style.gap = '10px';
 
-    const label = document.createElement("label");
-    label.htmlFor = "h-slider";
-    label.style.fontFamily = "Times New Roman, Latin Modern Math, serif";
-    label.style.fontStyle = "italic";
-    label.style.fontSize = "18px";
-    label.textContent = "h/H: ";
+    const label = document.createElement('label');
+    label.htmlFor = 'h-slider';
+    label.style.fontFamily = 'Times New Roman, Latin Modern Math, serif';
+    label.style.fontStyle = 'italic';
+    label.style.fontSize = '18px';
+    label.textContent = 'h/H: ';
 
-    const slider = document.createElement("input");
-    slider.type = "range";
-    slider.id = "h-slider";
-    slider.min = "0.01";
-    slider.max = "0.99";
-    slider.step = "0.01";
-    slider.value = "0.5";
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.id = 'h-slider';
+    slider.min = '0.01';
+    slider.max = '0.99';
+    slider.step = '0.01';
+    slider.value = '0.5';
 
-    const valDisplay = document.createElement("span");
-    valDisplay.style.fontFamily = "Times New Roman, Latin Modern Math, serif";
-    valDisplay.style.fontSize = "18px";
+    const valDisplay = document.createElement('span');
+    valDisplay.style.fontFamily = 'Times New Roman, Latin Modern Math, serif';
+    valDisplay.style.fontSize = '18px';
     valDisplay.textContent = slider.value;
 
     controls.appendChild(label);
@@ -58,16 +58,16 @@
     container.appendChild(controls);
     container.appendChild(canvas);
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     const baseWidth = 500;
     const baseHeight = 400;
 
-    container.style.width = "100%";
-    canvas.style.display = "block";
-    canvas.style.width = "100%";
-    canvas.style.maxWidth = baseWidth + "px";
-    canvas.style.height = "auto";
+    container.style.width = '100%';
+    canvas.style.display = 'block';
+    canvas.style.width = '100%';
+    canvas.style.maxWidth = baseWidth + 'px';
+    canvas.style.height = 'auto';
 
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
@@ -83,8 +83,8 @@
     }
 
     resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("orientationchange", resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
 
     const H = 1.0;
     const g = 9.81;
@@ -99,13 +99,13 @@
 
     let particles = [];
 
-    slider.addEventListener("input", (e) => {
+    slider.addEventListener('input', (e) => {
         h = parseFloat(e.target.value);
         valDisplay.textContent = h.toFixed(2);
         particles = [];
     });
 
-    function drawSketchLine(x1, y1, x2, y2, strokeStyle = "#111", lineWidth = 2) {
+    function drawSketchLine(x1, y1, x2, y2, strokeStyle = '#111', lineWidth = 2) {
         ctx.beginPath();
         ctx.strokeStyle = strokeStyle;
         ctx.lineWidth = lineWidth;
@@ -114,7 +114,7 @@
         ctx.stroke();
     }
 
-    function drawSketchEllipse(cx, cy, rx, ry, strokeStyle = "#111", fillStyle = null) {
+    function drawSketchEllipse(cx, cy, rx, ry, strokeStyle = '#111', fillStyle = null) {
         ctx.beginPath();
         ctx.strokeStyle = strokeStyle;
         ctx.lineWidth = 2;
@@ -131,7 +131,7 @@
         ctx.beginPath();
         ctx.rect(x, y, w, height);
         ctx.clip();
-        ctx.strokeStyle = "rgba(70, 150, 220, 0.4)";
+        ctx.strokeStyle = 'rgba(70, 150, 220, 0.4)';
         ctx.lineWidth = 1.5;
         for (let i = -height; i < w + height; i += 10) {
             ctx.beginPath();
@@ -151,7 +151,7 @@
         ctx.lineTo(-7, -4);
         ctx.lineTo(-7, 4);
         ctx.closePath();
-        ctx.fillStyle = "#111";
+        ctx.fillStyle = '#111';
         ctx.fill();
         ctx.restore();
     }
@@ -163,11 +163,10 @@
         const dt = Math.min((now - lastTime) / 1000, 0.05);
         lastTime = now;
 
-        ctx.fillStyle = "#faf8f5";
+        ctx.fillStyle = '#faf8f5';
         ctx.fillRect(0, 0, baseWidth, baseHeight);
 
         const v_x = Math.sqrt(2 * g * (H - h));
-        const holeX_math = 0;
         const holeY_math = h;
         const holeCanvasX = originX + canWidth;
         const holeCanvasY = originY - holeY_math * scale;
@@ -179,35 +178,35 @@
 
         drawHatchWater(originX, waterTopY, canWidth, waterHeightPx);
 
-        drawSketchEllipse(originX + rx, waterTopY, rx, ry, "#336699", "rgba(180, 220, 240, 0.5)");
-        drawSketchLine(originX, waterTopY, originX, originY, "#222", 2);
-        drawSketchLine(originX + canWidth, waterTopY, originX + canWidth, originY, "#222", 2);
-        drawSketchEllipse(originX + rx, originY, rx, ry, "#222");
+        drawSketchEllipse(originX + rx, waterTopY, rx, ry, '#336699', 'rgba(180, 220, 240, 0.5)');
+        drawSketchLine(originX, waterTopY, originX, originY, '#222', 2);
+        drawSketchLine(originX + canWidth, waterTopY, originX + canWidth, originY, '#222', 2);
+        drawSketchEllipse(originX + rx, originY, rx, ry, '#222');
 
-        drawSketchLine(originX - 25, originY, baseWidth - 20, originY, "#333", 2);
+        drawSketchLine(originX - 25, originY, baseWidth - 20, originY, '#333', 2);
         drawArrowHead(baseWidth - 20, originY, 0);
 
-        drawSketchLine(originX, originY + 15, originX, waterTopY - 25, "#333", 2);
+        drawSketchLine(originX, originY + 15, originX, waterTopY - 25, '#333', 2);
         drawArrowHead(originX, waterTopY - 25, -Math.PI / 2);
 
         const dimHX = originX - 35;
-        drawSketchLine(dimHX, waterTopY, dimHX, originY, "#555", 1);
+        drawSketchLine(dimHX, waterTopY, dimHX, originY, '#555', 1);
         drawArrowHead(dimHX, waterTopY, -Math.PI / 2);
         drawArrowHead(dimHX, originY, Math.PI / 2);
 
         const dimhX = holeCanvasX + 25;
-        drawSketchLine(dimhX, holeCanvasY, dimhX, originY, "#555", 1);
+        drawSketchLine(dimhX, holeCanvasY, dimhX, originY, '#555', 1);
         drawArrowHead(dimhX, holeCanvasY, -Math.PI / 2);
         drawArrowHead(dimhX, originY, Math.PI / 2);
 
-        ctx.fillStyle = "#111";
+        ctx.fillStyle = '#111';
         ctx.font = "italic 22px 'Times New Roman', 'Latin Modern Math', serif";
-        ctx.fillText("x", baseWidth - 30, originY + 25);
-        ctx.fillText("y", originX + 12, waterTopY - 15);
-        ctx.fillText("H", dimHX - 22, waterTopY + canHeight / 2 + 7);
-        ctx.fillText("h", dimhX + 10, holeCanvasY + (originY - holeCanvasY) / 2 + 7);
+        ctx.fillText('x', baseWidth - 30, originY + 25);
+        ctx.fillText('y', originX + 12, waterTopY - 15);
+        ctx.fillText('H', dimHX - 22, waterTopY + canHeight / 2 + 7);
+        ctx.fillText('h', dimhX + 10, holeCanvasY + (originY - holeCanvasY) / 2 + 7);
 
-        drawSketchEllipse(holeCanvasX, holeCanvasY, 4, 6, "#111", "#faf8f5");
+        drawSketchEllipse(holeCanvasX, holeCanvasY, 4, 6, '#111', '#faf8f5');
 
         spawnTimer += dt;
         if (spawnTimer > 0.04) {
@@ -215,8 +214,8 @@
             spawnTimer = 0;
         }
 
-        ctx.fillStyle = "rgba(60, 140, 210, 0.75)";
-        ctx.strokeStyle = "rgba(30, 80, 160, 0.85)";
+        ctx.fillStyle = 'rgba(60, 140, 210, 0.75)';
+        ctx.strokeStyle = 'rgba(30, 80, 160, 0.85)';
         ctx.lineWidth = 1;
 
         const timeScale = 0.65;

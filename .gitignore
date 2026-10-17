@@ -2,6 +2,7 @@
 /public/
 /resources/_gen/
 /.hugo_build.lock
+/node_modules/
 
 # numerics-js submodule build artifacts (vendored output lives in static/js/numeric-js)
 /vendor/numerics-js/node_modules/

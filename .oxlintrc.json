@@ -1,0 +1,13 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["oxc"],
+    "categories": {
+        "correctness": "error"
+    },
+    "ignorePatterns": ["static/js/numeric-js/**"],
+    "env": {
+        "builtin": true,
+        "browser": true,
+        "node": true
+    }
+}

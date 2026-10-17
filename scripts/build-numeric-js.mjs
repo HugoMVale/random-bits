@@ -42,4 +42,3 @@ await rm(targetDir, { recursive: true, force: true });
 await copyJs(distDir, targetDir);
 
 console.log('Done.');
-

@@ -3,6 +3,13 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build:numeric-js": "node scripts/build-numeric-js.mjs"
+        "build:numeric-js": "node scripts/build-numeric-js.mjs",
+        "lint": "oxlint scripts static/js --deny-warnings",
+        "format": "oxfmt scripts static/js package.json",
+        "format:check": "oxfmt --check scripts static/js package.json"
+    },
+    "devDependencies": {
+        "oxfmt": "^0.73.0",
+        "oxlint": "^1.88.0"
     }
 }

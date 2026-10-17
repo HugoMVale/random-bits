@@ -43,28 +43,162 @@ if (canvas) {
 
     const config = [
         // Behavior
-        { id: 'Kc', tex: 'K_{\\mathrm{c}}', unit: '(1/s²)', min: 0.0, max: 5.0, step: 0.1, val: 0.8, group: behaviorGroup },
-        { id: 'Ka', tex: 'K_{\\mathrm{a}}', unit: '(1/s)', min: 0.0, max: 10.0, step: 0.1, val: 2.5, group: behaviorGroup },
-        { id: 'Ks', tex: 'K_{\\mathrm{s}}', unit: '(1/s²)', min: 0.0, max: 50.0, step: 1.0, val: 15.0, group: behaviorGroup },
-        { id: 'Ko', tex: 'K_{\\mathrm{o}}', unit: '(1/s²)', min: 0.0, max: 400.0, step: 5.0, val: 200.0, group: behaviorGroup },
-        { id: 'tau', tex: '\\tau', unit: '(s)', min: 0.1, max: 5.0, step: 0.1, val: 3.0, group: behaviorGroup },
-        { id: 'phi', tex: '\\phi', unit: '(°)', min: 10, max: 180, step: 5, val: 120, group: behaviorGroup },
-        { id: 'Rp', tex: 'R_{\\mathrm{p}}', unit: '(m)', min: 1.0, max: 30.0, step: 0.5, val: 10.0, group: behaviorGroup },
-        { id: 'Rs', tex: 'R_{\\mathrm{s}}', unit: '(m)', min: 0.1, max: 5.0, step: 0.1, val: 1.5, group: behaviorGroup },
+        {
+            id: 'Kc',
+            tex: 'K_{\\mathrm{c}}',
+            unit: '(1/s²)',
+            min: 0.0,
+            max: 5.0,
+            step: 0.1,
+            val: 0.8,
+            group: behaviorGroup,
+        },
+        {
+            id: 'Ka',
+            tex: 'K_{\\mathrm{a}}',
+            unit: '(1/s)',
+            min: 0.0,
+            max: 10.0,
+            step: 0.1,
+            val: 2.5,
+            group: behaviorGroup,
+        },
+        {
+            id: 'Ks',
+            tex: 'K_{\\mathrm{s}}',
+            unit: '(1/s²)',
+            min: 0.0,
+            max: 50.0,
+            step: 1.0,
+            val: 15.0,
+            group: behaviorGroup,
+        },
+        {
+            id: 'Ko',
+            tex: 'K_{\\mathrm{o}}',
+            unit: '(1/s²)',
+            min: 0.0,
+            max: 400.0,
+            step: 5.0,
+            val: 200.0,
+            group: behaviorGroup,
+        },
+        {
+            id: 'tau',
+            tex: '\\tau',
+            unit: '(s)',
+            min: 0.1,
+            max: 5.0,
+            step: 0.1,
+            val: 3.0,
+            group: behaviorGroup,
+        },
+        {
+            id: 'phi',
+            tex: '\\phi',
+            unit: '(°)',
+            min: 10,
+            max: 180,
+            step: 5,
+            val: 120,
+            group: behaviorGroup,
+        },
+        {
+            id: 'Rp',
+            tex: 'R_{\\mathrm{p}}',
+            unit: '(m)',
+            min: 1.0,
+            max: 30.0,
+            step: 0.5,
+            val: 10.0,
+            group: behaviorGroup,
+        },
+        {
+            id: 'Rs',
+            tex: 'R_{\\mathrm{s}}',
+            unit: '(m)',
+            min: 0.1,
+            max: 5.0,
+            step: 0.1,
+            val: 1.5,
+            group: behaviorGroup,
+        },
 
         // Sim
-        { id: 'v_target', tex: 'v_{\\mathrm{target}}', unit: '(m/s)', min: 1.0, max: 25.0, step: 0.5, val: 8.0, group: simGroup },
-        { id: 'Kspeed', tex: 'K_{\\mathrm{speed}}', unit: '(1/s)', min: 0.0, max: 5.0, step: 0.1, val: 1.0, group: simGroup },
-        { id: 'Amax', tex: 'a_{\\max}', unit: '(m/s²)', min: 1, max: 100, step: 1, val: 20, group: simGroup },
-        { id: 'Vmax', tex: 'v_{\\max}', unit: '(m/s)', min: 5, max: 40, step: 1, val: 20, group: simGroup },
-        { id: 'N_birds', tex: 'N', unit: '', min: 10, max: 500, step: 10, val: 150, group: simGroup },
-        { id: 'D_bird', tex: 'D_{\\mathrm{bird}}', unit: '(m)', min: 0.1, max: 2.0, step: 0.1, val: 0.5, group: simGroup },
-        { id: 'H_domain', tex: 'H', unit: '(m)', min: 50, max: 300, step: 10, val: 150, group: simGroup }
-
+        {
+            id: 'v_target',
+            tex: 'v_{\\mathrm{target}}',
+            unit: '(m/s)',
+            min: 1.0,
+            max: 25.0,
+            step: 0.5,
+            val: 8.0,
+            group: simGroup,
+        },
+        {
+            id: 'Kspeed',
+            tex: 'K_{\\mathrm{speed}}',
+            unit: '(1/s)',
+            min: 0.0,
+            max: 5.0,
+            step: 0.1,
+            val: 1.0,
+            group: simGroup,
+        },
+        {
+            id: 'Amax',
+            tex: 'a_{\\max}',
+            unit: '(m/s²)',
+            min: 1,
+            max: 100,
+            step: 1,
+            val: 20,
+            group: simGroup,
+        },
+        {
+            id: 'Vmax',
+            tex: 'v_{\\max}',
+            unit: '(m/s)',
+            min: 5,
+            max: 40,
+            step: 1,
+            val: 20,
+            group: simGroup,
+        },
+        {
+            id: 'N_birds',
+            tex: 'N',
+            unit: '',
+            min: 10,
+            max: 500,
+            step: 10,
+            val: 150,
+            group: simGroup,
+        },
+        {
+            id: 'D_bird',
+            tex: 'D_{\\mathrm{bird}}',
+            unit: '(m)',
+            min: 0.1,
+            max: 2.0,
+            step: 0.1,
+            val: 0.5,
+            group: simGroup,
+        },
+        {
+            id: 'H_domain',
+            tex: 'H',
+            unit: '(m)',
+            min: 50,
+            max: 300,
+            step: 10,
+            val: 150,
+            group: simGroup,
+        },
     ];
 
     const state = {};
-    config.forEach(c => {
+    config.forEach((c) => {
         state[c.id] = c.val;
         const row = document.createElement('div');
         row.className = 'bf-row';
@@ -102,7 +236,8 @@ if (canvas) {
 
     const hint = document.createElement('div');
     hint.className = 'bf-hint';
-    hint.textContent = '💡 Tip: Drag trees to move/resize; right-click one for details or empty space to add; double-click to remove.';
+    hint.textContent =
+        '💡 Tip: Drag trees to move/resize; right-click one for details or empty space to add; double-click to remove.';
     wrap.appendChild(hint);
 
     canvas.className = 'bf-canvas';
@@ -110,7 +245,9 @@ if (canvas) {
     const CANVAS_H = 500;
 
     function getWDomain() {
-        return canvas.clientWidth > 0 ? state.H_domain * (canvas.clientWidth / CANVAS_H) : state.H_domain;
+        return canvas.clientWidth > 0
+            ? state.H_domain * (canvas.clientWidth / CANVAS_H)
+            : state.H_domain;
     }
 
     // --- 2. MATH & TRAJECTORY COMPUTATION ---
@@ -142,7 +279,7 @@ if (canvas) {
                 this.lobes.push({
                     angle: (i / lobeCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.6,
                     ringFrac: 0.5 + Math.random() * 0.15,
-                    sizeFrac: 0.32 + Math.random() * 0.15
+                    sizeFrac: 0.32 + Math.random() * 0.15,
                 });
             }
         }
@@ -157,7 +294,7 @@ if (canvas) {
         init(N, W, H, D_bird, targetSpeed) {
             this.obstacles = [
                 new Obstacle(new Vec3(W * 0.3, H * 0.5, 0), H * 0.1),
-                new Obstacle(new Vec3(W * 0.7, H * 0.5, 0), H * 0.15)
+                new Obstacle(new Vec3(W * 0.7, H * 0.5, 0), H * 0.15),
             ];
 
             this.birds = [];
@@ -170,8 +307,10 @@ if (canvas) {
                 while (overlap && attempts < 50) {
                     pos = new Vec3(Math.random() * W, Math.random() * H, 0);
 
-                    const birdOverlap = this.birds.some(b => b.pos.dist(pos) < D_bird);
-                    const obstacleOverlap = this.obstacles.some(obs => pos.dist(obs.pos) < obs.radius + D_bird / 2);
+                    const birdOverlap = this.birds.some((b) => b.pos.dist(pos) < D_bird);
+                    const obstacleOverlap = this.obstacles.some(
+                        (obs) => pos.dist(obs.pos) < obs.radius + D_bird / 2,
+                    );
 
                     overlap = birdOverlap || obstacleOverlap;
                     attempts++;
@@ -184,12 +323,12 @@ if (canvas) {
         }
 
         computeRules() {
-            const cosPhi = Math.cos(state.phi * Math.PI / 180);
+            const cosPhi = Math.cos((state.phi * Math.PI) / 180);
             const cellSize = state.Rp;
             const grid = new Map();
             const getGridKey = (v) => `${Math.floor(v.x / cellSize)},${Math.floor(v.y / cellSize)}`;
 
-            this.birds.forEach(b => {
+            this.birds.forEach((b) => {
                 const k = getGridKey(b.pos);
                 if (!grid.has(k)) grid.set(k, []);
                 grid.get(k).push(b);
@@ -209,10 +348,10 @@ if (canvas) {
             const W_domain = getWDomain();
             const H_domain = state.H_domain;
             const wallNormals = [
-                { normal: new Vec3(1, 0, 0), coord: 'x', bound: 0, dir: 1 },   // x = 0 wall
+                { normal: new Vec3(1, 0, 0), coord: 'x', bound: 0, dir: 1 }, // x = 0 wall
                 { normal: new Vec3(-1, 0, 0), coord: 'x', bound: W_domain, dir: -1 }, // x = W wall
-                { normal: new Vec3(0, 1, 0), coord: 'y', bound: 0, dir: 1 },   // y = 0 wall
-                { normal: new Vec3(0, -1, 0), coord: 'y', bound: H_domain, dir: -1 }  // y = H wall
+                { normal: new Vec3(0, 1, 0), coord: 'y', bound: 0, dir: 1 }, // y = 0 wall
+                { normal: new Vec3(0, -1, 0), coord: 'y', bound: H_domain, dir: -1 }, // y = H wall
             ];
             // Threshold below which the tangential (along-wall) speed is
             // considered "flying straight at the wall" and needs a sideways
@@ -276,14 +415,15 @@ if (canvas) {
                                     // scratch scaled by the negated factor
                                     // instead of allocating a second temporary
                                     // vector for bird.pos.sub(other.pos).
-                                    accS.addScaled(scratch, -(state.Ks * overlap / dist));
+                                    accS.addScaled(scratch, -((state.Ks * overlap) / dist));
                                 }
                             }
                         }
                     }
                 }
 
-                let accC = new Vec3(), accA = new Vec3();
+                let accC = new Vec3(),
+                    accA = new Vec3();
                 if (neighborCount > 0) {
                     const avgPos = sumPos.mult(1 / neighborCount);
                     const avgVel = sumVel.mult(1 / neighborCount);
@@ -306,7 +446,7 @@ if (canvas) {
 
                 let accO = new Vec3();
                 const s_i = bird.pos.add(bird.vel.mult(state.tau));
-                this.obstacles.forEach(obs => {
+                this.obstacles.forEach((obs) => {
                     const dVec = s_i.sub(obs.pos);
                     const d_ik = dVec.norm();
                     if (d_ik < obs.radius) {
@@ -326,7 +466,7 @@ if (canvas) {
                 // applyDomainConstraints() for cases this steering didn't fully
                 // resolve in time.
                 let wallEngaged = false;
-                wallNormals.forEach(wall => {
+                wallNormals.forEach((wall) => {
                     const penetration = wall.dir * (wall.bound - s_i[wall.coord]);
                     if (penetration <= 0) return;
                     wallEngaged = true;
@@ -360,19 +500,29 @@ if (canvas) {
         applyDomainConstraints() {
             const W = getWDomain();
             const H = state.H_domain;
-            this.birds.forEach(b => {
-                if (b.pos.x < 0) { b.pos.x = 0; b.vel.x *= -1; }
-                else if (b.pos.x > W) { b.pos.x = W; b.vel.x *= -1; }
+            this.birds.forEach((b) => {
+                if (b.pos.x < 0) {
+                    b.pos.x = 0;
+                    b.vel.x *= -1;
+                } else if (b.pos.x > W) {
+                    b.pos.x = W;
+                    b.vel.x *= -1;
+                }
 
-                if (b.pos.y < 0) { b.pos.y = 0; b.vel.y *= -1; }
-                else if (b.pos.y > H) { b.pos.y = H; b.vel.y *= -1; }
+                if (b.pos.y < 0) {
+                    b.pos.y = 0;
+                    b.vel.y *= -1;
+                } else if (b.pos.y > H) {
+                    b.pos.y = H;
+                    b.vel.y *= -1;
+                }
             });
         }
 
         update(dt) {
             this.computeRules();
 
-            this.birds.forEach(b => {
+            this.birds.forEach((b) => {
                 b.vel = b.vel.add(b.acc.mult(dt)).limit(state.Vmax);
                 b.pos = b.pos.add(b.vel.mult(dt));
             });
@@ -406,17 +556,13 @@ if (canvas) {
         return {
             x: pos.x * scale,
             y: CANVAS_H - pos.y * scale,
-            scale
+            scale,
         };
     }
 
     function canvasToWorld(cx, cy) {
         const scale = CANVAS_H / state.H_domain;
-        return new Vec3(
-            cx / scale,
-            state.H_domain - cy / scale,
-            0
-        );
+        return new Vec3(cx / scale, state.H_domain - cy / scale, 0);
     }
 
     function draw() {
@@ -437,13 +583,13 @@ if (canvas) {
         ctx.strokeRect(bl.x, tr.y, tr.x - bl.x, bl.y - tr.y);
         ctx.setLineDash([]);
 
-        sim.obstacles.forEach(obs => {
+        sim.obstacles.forEach((obs) => {
             const center = worldToCanvas(obs.pos);
             const radius = obs.radius * center.scale;
 
             fillCircle(ctx, center.x, center.y, radius * 0.8, '#3e7d4f');
 
-            obs.lobes.forEach(lobe => {
+            obs.lobes.forEach((lobe) => {
                 const lx = center.x + Math.cos(lobe.angle) * radius * lobe.ringFrac;
                 const ly = center.y + Math.sin(lobe.angle) * radius * lobe.ringFrac;
                 fillCircle(ctx, lx, ly, radius * lobe.sizeFrac, '#4f9d63');
@@ -451,7 +597,13 @@ if (canvas) {
 
             // Soft highlight toward the upper-left, suggesting a light
             // source (matches most of the reference icons).
-            fillCircle(ctx, center.x - radius * 0.22, center.y - radius * 0.22, radius * 0.32, 'rgba(255, 255, 255, 0.22)');
+            fillCircle(
+                ctx,
+                center.x - radius * 0.22,
+                center.y - radius * 0.22,
+                radius * 0.32,
+                'rgba(255, 255, 255, 0.22)',
+            );
 
             // Trunk, dead center — also a visual cue for "grab here to move".
             fillCircle(ctx, center.x, center.y, Math.max(2, radius * 0.12), '#5b4530');
@@ -461,7 +613,7 @@ if (canvas) {
         });
 
         ctx.fillStyle = '#2c3e50';
-        sim.birds.forEach(b => {
+        sim.birds.forEach((b) => {
             const renderPos = worldToCanvas(b.pos);
             const size = state.D_bird * renderPos.scale * 2.0;
             const angle = Math.atan2(-b.vel.y, b.vel.x);
@@ -576,14 +728,16 @@ if (canvas) {
         const cy = e.clientY - rect.top;
         const worldPos = canvasToWorld(cx, cy);
 
-        let hit = sim.obstacles.find(obs => worldPos.dist(obs.pos) <= obs.radius);
+        let hit = sim.obstacles.find((obs) => worldPos.dist(obs.pos) <= obs.radius);
         if (hit) {
-            tooltip.style.left = (cx + 15) + 'px';
-            tooltip.style.top = (cy + 15) + 'px';
+            tooltip.style.left = cx + 15 + 'px';
+            tooltip.style.top = cy + 15 + 'px';
             tooltip.innerHTML = `Center: (${hit.pos.x.toFixed(1)}, ${hit.pos.y.toFixed(1)})<br>Radius: ${hit.radius.toFixed(1)} m`;
             tooltip.style.opacity = 1;
 
-            setTimeout(() => { tooltip.style.opacity = 0; }, 3000);
+            setTimeout(() => {
+                tooltip.style.opacity = 0;
+            }, 3000);
         } else {
             // Right-clicking empty space plants a new tree there, at a
             // default size matching the initial obstacles. Safe even right
@@ -601,9 +755,9 @@ if (canvas) {
         const cy = e.clientY - rect.top;
         const worldPos = canvasToWorld(cx, cy);
 
-        const hit = sim.obstacles.find(obs => worldPos.dist(obs.pos) <= obs.radius);
+        const hit = sim.obstacles.find((obs) => worldPos.dist(obs.pos) <= obs.radius);
         if (hit) {
-            sim.obstacles = sim.obstacles.filter(obs => obs !== hit);
+            sim.obstacles = sim.obstacles.filter((obs) => obs !== hit);
             activeObstacle = null;
             interactionMode = null;
             tooltip.style.opacity = 0;
@@ -614,7 +768,7 @@ if (canvas) {
     playBtn.addEventListener('click', () => setPlaying(!playing));
     restartBtn.addEventListener('click', resetSim);
 
-    config.forEach(c => {
+    config.forEach((c) => {
         const input = document.getElementById(`bf-${c.id}`);
         const valSpan = document.getElementById(`bf-${c.id}-val`);
         input.addEventListener('input', () => {

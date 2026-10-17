@@ -102,7 +102,10 @@
         for (let i = 0; i < NUM_MOLECULES; i++) {
             const length = 45 + Math.random() * 15;
             const radius = length / 2 + 4;
-            let x, y, overlaps, attempts = 0;
+            let x,
+                y,
+                overlaps,
+                attempts = 0;
 
             do {
                 x = radius + Math.random() * (width - 2 * radius);
@@ -132,14 +135,14 @@
                     radius: radius,
                     waves: 3,
                     leftIonized: Math.random() < alpha,
-                    rightIonized: Math.random() < alpha
+                    rightIonized: Math.random() < alpha,
                 });
             }
         }
     }
 
     function updateStates() {
-        molecules.forEach(m => {
+        molecules.forEach((m) => {
             m.leftIonized = Math.random() < alpha;
             m.rightIonized = Math.random() < alpha;
         });
@@ -205,7 +208,7 @@
 
                     const kx = m1.vx - m2.vx;
                     const ky = m1.vy - m2.vy;
-                    const p = 2 * (nx * kx + ny * ky) / 2;
+                    const p = (2 * (nx * kx + ny * ky)) / 2;
 
                     m1.vx -= p * nx;
                     m1.vy -= p * ny;
@@ -233,7 +236,7 @@
             const t = i / steps;
             const px = x1 + ux * len * t;
             const py = y1 + uy * len * t;
-            const side = (i % 2 === 0) ? 0 : (i % 4 === 1 ? 1 : -1);
+            const side = i % 2 === 0 ? 0 : i % 4 === 1 ? 1 : -1;
             const offX = nx * amplitude * side;
             const offY = ny * amplitude * side;
 
@@ -261,7 +264,7 @@
         const ionizedPath = new Path2D();
         const nonIonizedPath = new Path2D();
 
-        molecules.forEach(m => {
+        molecules.forEach((m) => {
             const cos = Math.cos(m.angle);
             const sin = Math.sin(m.angle);
             const halfLen = m.length / 2;

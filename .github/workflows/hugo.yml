@@ -37,6 +37,15 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install JavaScript tooling
+        run: npm ci
+
+      - name: Lint JavaScript
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
       - name: Build numeric-js
         run: npm run build:numeric-js
 

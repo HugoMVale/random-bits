@@ -77,15 +77,87 @@ if (canvas) {
     bowGroup.innerHTML = `<div class="vs-group-title">Bow Parameters</div>`;
 
     const config = [
-        { id: 'L', tex: 'L', unit: '(m)', min: 0.1, max: 1.0, step: 0.01, val: 0.33, group: stringGroup },
+        {
+            id: 'L',
+            tex: 'L',
+            unit: '(m)',
+            min: 0.1,
+            max: 1.0,
+            step: 0.01,
+            val: 0.33,
+            group: stringGroup,
+        },
         { id: 'T', tex: 'T', unit: '(N)', min: 10, max: 100, step: 1, val: 50, group: stringGroup },
-        { id: 'rho', tex: '\\rho', unit: '(kg/m)', min: 0.0001, max: 0.01, step: 0.0001, val: 0.0006, group: stringGroup },
-        { id: 'gamma', tex: '\\gamma', unit: '(1/s)', min: 0, max: 10, step: 0.01, val: 2.0, group: stringGroup },
-        { id: 'v_bow', tex: 'v_{\\mathrm{bow}}', unit: '(m/s)', min: -0.5, max: 0.5, step: 0.01, val: 0.15, group: bowGroup },
-        { id: 'F_N', tex: 'F_N', unit: '(N)', min: 0, max: 2, step: 0.01, val: 0.5, group: bowGroup },
-        { id: 'mu_d', tex: '\\mu_d', unit: '(-)', min: 0, max: 1.0, step: 0.01, val: 0.3, group: bowGroup },
-        { id: 'mu_s', tex: '\\mu_s', unit: '(-)', min: 0, max: 2.0, step: 0.01, val: 1.0, group: bowGroup },
-        { id: 'v_scale', tex: 'v_{\\mathrm{scale}}', unit: '(m/s)', min: 0.01, max: 0.2, step: 0.01, val: 0.03, group: bowGroup }
+        {
+            id: 'rho',
+            tex: '\\rho',
+            unit: '(kg/m)',
+            min: 0.0001,
+            max: 0.01,
+            step: 0.0001,
+            val: 0.0006,
+            group: stringGroup,
+        },
+        {
+            id: 'gamma',
+            tex: '\\gamma',
+            unit: '(1/s)',
+            min: 0,
+            max: 10,
+            step: 0.01,
+            val: 2.0,
+            group: stringGroup,
+        },
+        {
+            id: 'v_bow',
+            tex: 'v_{\\mathrm{bow}}',
+            unit: '(m/s)',
+            min: -0.5,
+            max: 0.5,
+            step: 0.01,
+            val: 0.15,
+            group: bowGroup,
+        },
+        {
+            id: 'F_N',
+            tex: 'F_N',
+            unit: '(N)',
+            min: 0,
+            max: 2,
+            step: 0.01,
+            val: 0.5,
+            group: bowGroup,
+        },
+        {
+            id: 'mu_d',
+            tex: '\\mu_d',
+            unit: '(-)',
+            min: 0,
+            max: 1.0,
+            step: 0.01,
+            val: 0.3,
+            group: bowGroup,
+        },
+        {
+            id: 'mu_s',
+            tex: '\\mu_s',
+            unit: '(-)',
+            min: 0,
+            max: 2.0,
+            step: 0.01,
+            val: 1.0,
+            group: bowGroup,
+        },
+        {
+            id: 'v_scale',
+            tex: 'v_{\\mathrm{scale}}',
+            unit: '(m/s)',
+            min: 0.01,
+            max: 0.2,
+            step: 0.01,
+            val: 0.03,
+            group: bowGroup,
+        },
     ];
 
     const EPSILON = 0.01;
@@ -94,7 +166,7 @@ if (canvas) {
     const inputs = {};
     const vals = {};
 
-    config.forEach(c => {
+    config.forEach((c) => {
         state[c.id] = c.val;
         const row = document.createElement('div');
         row.className = 'vs-row';
@@ -163,9 +235,10 @@ if (canvas) {
     wrap.appendChild(hint);
 
     function updateHint() {
-        hint.textContent = mode === 'bow'
-            ? '💡 Tip: Drag left or right on the string to move the bow.'
-            : '💡 Tip: Click and drag on the string to pluck it.';
+        hint.textContent =
+            mode === 'bow'
+                ? '💡 Tip: Drag left or right on the string to move the bow.'
+                : '💡 Tip: Click and drag on the string to pluck it.';
     }
 
     canvas.className = 'vs-canvas';
@@ -236,7 +309,11 @@ if (canvas) {
             if (idx + 1 >= 0 && idx + 1 < N) v_string_at_bow += t * v[idx + 1];
 
             const v_rel = state.v_bow - v_string_at_bow;
-            const F_bow = state.F_N * (state.mu_d + (state.mu_s - state.mu_d) * Math.exp(-Math.abs(v_rel) / state.v_scale)) * Math.tanh(v_rel / EPSILON);
+            const F_bow =
+                state.F_N *
+                (state.mu_d +
+                    (state.mu_s - state.mu_d) * Math.exp(-Math.abs(v_rel) / state.v_scale)) *
+                Math.tanh(v_rel / EPSILON);
             const force_term = F_bow / (state.rho * dx);
 
             if (idx >= 0 && idx < N) aOut[idx] += force_term * (1 - t);
@@ -454,7 +531,7 @@ if (canvas) {
 
     playBtn.addEventListener('click', () => setPlaying(!playing));
 
-    config.forEach(c => {
+    config.forEach((c) => {
         const input = document.getElementById(`vs-${c.id}`);
         const valSpan = document.getElementById(`vs-${c.id}-val`);
         inputs[c.id] = input;
